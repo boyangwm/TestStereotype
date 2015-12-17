@@ -1,0 +1,15 @@
+package durbodax.daos;
+
+/**
+ *
+ * @author gbeckenbaugh
+ */
+public abstract class DAOFactory {
+    
+    public static DAOFactory getDAOFactory(){
+        // return Derby FActory by default since its the only DB used in this project
+        return new DerbyDAOFactory();
+    }
+            
+    public abstract DerbyCustomerDAO getCustomerDAO();
+}

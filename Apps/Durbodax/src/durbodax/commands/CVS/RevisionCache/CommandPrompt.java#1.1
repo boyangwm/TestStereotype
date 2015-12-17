@@ -1,0 +1,76 @@
+package durbodax.commands;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+
+/**
+ *
+ * @author Kirk
+ */
+public final class CommandPrompt {
+
+    private int currentIndex;
+    private final String[] userPrompts;
+    private final BufferedReader bufferedReader;
+  
+    public CommandPrompt(String[] prompts) {
+
+        userPrompts = prompts;
+        currentIndex = 0;
+        bufferedReader = new BufferedReader(new InputStreamReader(System.in));
+
+    }
+    
+    public int size() {
+
+        return userPrompts.length;
+    }
+    
+    public String getPrompt(int i) {
+
+        return userPrompts[i];
+    }
+
+    public void reset() {
+
+        currentIndex = 0;
+
+    }
+    
+    public String displayNextPrompt() {
+
+        
+        try {
+
+            String userInput = "";
+
+            do {
+                
+                 System.out.print(userPrompts[currentIndex] + ": ");
+                 userInput = bufferedReader.readLine();
+
+            } while("".equals(userInput.trim()));
+
+            currentIndex++;
+            if(currentIndex == size()) {
+
+                currentIndex = 0;
+            }
+            return userInput.trim();
+
+        } catch(IOException e) {
+         
+        }
+        
+        currentIndex++;
+        if(currentIndex == size()) {
+
+            currentIndex = 0;
+            
+        }
+        return "";
+      
+  }
+
+}

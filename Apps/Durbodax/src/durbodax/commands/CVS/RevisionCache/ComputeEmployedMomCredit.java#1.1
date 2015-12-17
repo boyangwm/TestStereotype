@@ -1,0 +1,23 @@
+package durbodax.commands;
+
+import durbodax.daos.CustomerDAO;
+import durbodax.daos.DAOFactory;
+
+/**
+ *
+ * @author Kirk
+ */
+public class ComputeEmployedMomCredit implements Command {
+
+    public void execute(String[] params) {
+        
+        if(params.length > 1) {
+            
+               
+        CustomerDAO customerDAO = DAOFactory.getDAOFactory().getCustomerDAO();
+        
+        }
+        
+    }
+    
+}

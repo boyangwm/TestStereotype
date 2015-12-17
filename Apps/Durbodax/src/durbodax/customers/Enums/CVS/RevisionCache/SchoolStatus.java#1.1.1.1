@@ -1,0 +1,50 @@
+package durbodax.customers.Enums;
+
+import java.util.Map;
+import java.util.HashMap;
+import java.util.EnumSet;
+
+/**
+ *
+ * @author Kirk
+ */
+public enum SchoolStatus {
+    
+    //See School Table
+    NA(0),
+    NO(1),
+    YES(2);
+
+    private static final Map<Integer, SchoolStatus> lookup = new HashMap<Integer, SchoolStatus>();
+    private int code;
+    
+    static {
+        
+        for(SchoolStatus schoolStatus : EnumSet.allOf(SchoolStatus.class)) {
+            
+            lookup.put(schoolStatus.getCode(), schoolStatus);
+            
+        }
+        
+    }
+    
+    private SchoolStatus(int code) {
+        
+        this.code = code;
+        
+    }
+    
+    public int getCode() {
+        
+        return code;
+        
+    }
+    
+    public static SchoolStatus getStatus(int code) {
+     
+        return lookup.get(code);
+        
+    }
+
+
+}

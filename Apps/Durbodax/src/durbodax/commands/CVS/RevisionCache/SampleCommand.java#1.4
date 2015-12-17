@@ -1,0 +1,28 @@
+package durbodax.commands;
+
+/**
+ *
+ * @author Kirk
+ */
+public class SampleCommand implements Command {
+
+    /*
+    IDAO object;
+      
+    //DAO object could be passed into object providing direct access to the DB
+    public SampleCommand(IDAO object);     
+     */
+    
+    public SampleCommand() {}
+    
+    public Object execute(String[] params) {
+                
+        Object retObj = new Object();
+
+        System.out.println("Validate input parameters");
+        System.out.println("Execute function implementation call");
+
+        return retObj;
+    }
+    
+}

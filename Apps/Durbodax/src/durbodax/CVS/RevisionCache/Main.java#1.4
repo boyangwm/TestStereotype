@@ -1,0 +1,122 @@
+package durbodax;
+
+import durbodax.commands.CommandUtil;
+import durbodax.commands.SampleCommand;
+import durbodax.commands.ComputeBplTravel;
+import durbodax.commands.GetMarketingTopBottom;
+import durbodax.commands.GetMarketingCountsByGroup;
+import durbodax.commands.Command;
+import durbodax.commands.CommandPrompt;
+import durbodax.commands.CommandPromptUtil;
+import durbodax.commands.ComputeInLawTax;
+import durbodax.commands.ComputeIncomeTaxSingle;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+
+/**
+ *
+ * @author Kirk
+ */
+public class Main {
+
+    
+    static BufferedReader br = new BufferedReader(new InputStreamReader(System.in)); 
+    
+    /**
+     * @param args the command line arguments
+     */
+    public static void main(String[] args) {
+               
+        registerCommands();
+        registerCommandPrompts();
+       
+        try {
+            
+            System.out.print("Enter command: ");
+            String input = br.readLine();
+            while(!("quit".equalsIgnoreCase(input) || "exit".equalsIgnoreCase(input))) {
+            
+                processInput(input);
+                
+                System.out.print("Enter command: ");
+                input = br.readLine();
+            }
+            
+        } catch(IOException e) {
+            
+            System.out.println(e.getStackTrace());
+            System.out.println(e.getMessage());            
+        }       
+    } 
+    
+    public static void registerCommands() {
+        
+        CommandUtil.registerCommand("sample", new SampleCommand());
+        CommandUtil.registerCommand("ComputeBplTravel", new ComputeBplTravel());
+        CommandUtil.registerCommand("GetMarketingTopBottom", new GetMarketingTopBottom());
+        CommandUtil.registerCommand("GetMarketingCountsByGroup", new GetMarketingCountsByGroup());
+        CommandUtil.registerCommand("ComputeInLawTax", new ComputeInLawTax());
+        CommandUtil.registerCommand("ComputeIncomeTaxSingle", new ComputeIncomeTaxSingle());
+
+        //CommandUtil.registerCommand("sample2", new ConcreteCommand());
+        //CommandUtil.registerCommand("sample3", new ConcreteCommand());
+        
+    }
+
+    public static void registerCommandPrompts() {
+
+        
+        CommandPromptUtil.registerCommandPrompt("sample",new CommandPrompt(new String[]
+        {
+            "prompt1",
+            "prompt2",
+            "prompt3"
+
+        }));
+         
+    }
+    
+    public static void processInput(String statement) {
+        
+        //split user input into tokens by space delimiter
+        String[] tokens = statement.split(" ");
+        
+        if(tokens.length > 0) {
+
+            //Retrieve registered command and user prompts for corresponding user command
+            Command command = CommandUtil.getCommand(tokens[0]);
+            CommandPrompt prompt = CommandPromptUtil.getCommandPrompt(tokens[0]);
+
+            if(prompt != null) {
+
+                StringBuilder userInput = new StringBuilder();
+                userInput.append(tokens[0]);
+
+                //iterate through each display prompt
+                for(int i=0; i<prompt.size(); i++) {
+
+                    userInput.append(" " + prompt.displayNextPrompt());
+
+                }
+
+                //add user input values to token list to pass to delegated command execution
+                tokens = userInput.toString().split(" ");
+
+            }
+
+            if(command != null) {
+
+                System.out.println("");
+                command.execute(tokens);
+                
+            } else {
+                
+                System.out.println("Invalid Command!");
+                
+            }
+            
+        }
+    }
+    
+}

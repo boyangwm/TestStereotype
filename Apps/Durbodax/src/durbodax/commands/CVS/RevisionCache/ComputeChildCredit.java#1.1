@@ -1,0 +1,38 @@
+/*
+ * To change this template, choose Tools | Templates
+ * and open the template in the editor.
+ */
+
+package durbodax.commands;
+
+import durbodax.customers.Customer;
+import durbodax.customers.Enums.Sex;
+import durbodax.daos.CustomerDAO;
+import durbodax.daos.DAOFactory;
+
+/**
+ *
+ * @author SimmonsD
+ */
+public class ComputeChildCredit implements Command {
+    public Object execute(String[] params){
+        DAOFactory daoFactory = DAOFactory.getDAOFactory();
+        CustomerDAO instance = daoFactory.getCustomerDAO();
+
+        Customer result = instance.selectCustomer(Integer.parseInt(params[1]));
+        if(result ==  null) return "Invalid Customer";
+        Sex gender = result.getGenderEnum();
+        switch(gender) {
+            case Female:
+                if(result.getAge() >=16){
+                    int num = result.getNumChildrenInHouse();
+                    if(num <= 5 || num == 7)
+                        return num*100;
+                    if(num == 6) return 550;
+                    if(num >= 8) return 750;
+                } else return 0;
+            default:
+                return 0;
+        }
+    }
+}

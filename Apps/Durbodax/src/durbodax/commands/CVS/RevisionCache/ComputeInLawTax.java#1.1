@@ -1,0 +1,55 @@
+package durbodax.commands;
+
+import durbodax.daos.*;
+import durbodax.customers.*;
+import durbodax.customers.Enums.*;
+
+
+/**
+ *
+ * @author fszot
+ */
+public class ComputeInLawTax implements Command {
+
+    private DerbyDAOFactory derbyDAO;
+    private CustomerDAO customerDAO;
+    private int InlawTax;
+    private Customer customer;
+    private RelationWHeadHouse relation;
+    private Integer i;
+
+    public ComputeInLawTax() {
+
+        InlawTax = 0;
+        derbyDAO = new DerbyDAOFactory();
+        customerDAO = derbyDAO.getCustomerDAO();
+    }
+
+    public Object execute(String[] params) {
+        int id = Integer.parseInt(params[1]);
+        if (id <= 0 || id > 88443) {
+            throw new IllegalArgumentException("Invalid customer ID");
+        }
+
+        customer = customerDAO.selectCustomer(id);
+
+        if (customer.getRelationshipWHouseholderEnum() == relation.PARENT_IN_LAW) {
+            //setInlawTax(500);
+            i = new Integer(500);
+            displayOutput(i);
+            return i;
+        } else {
+            i = new Integer(0);
+            displayOutput(i);
+            return i;
+        }
+
+    }
+
+    private void displayOutput(Integer output) {
+
+        System.out.println(output.toString());
+
+    }
+
+}

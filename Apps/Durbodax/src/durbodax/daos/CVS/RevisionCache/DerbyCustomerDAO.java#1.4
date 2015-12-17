@@ -1,0 +1,130 @@
+package durbodax.daos;
+
+import java.sql.*;
+import durbodax.customers.*;
+
+/**
+ * DerbyCustomerDAO Derby specific implemenation to retrieve customer data from ipums db
+ * @author gbeckenbaugh
+ */
+public class DerbyCustomerDAO implements CustomerDAO {
+
+    private Connection _conn = null;
+    final static String queryStatement =
+        "SELECT MAIN.ID,YEARR,GQ,GQTYPE,FARM,OWNERSHP,VALUE,RENT,FTOTINC,NFAMS,NCOUPLES,NMOTHERS," +
+        "NFATHERS,MOMLOC,STEPMOM,MOMRULE,POPLOC,STEPPOP,POPRULE,SPLOC,SPRULE,FAMSIZE,NCHILD,NCHLT5," +
+        "FAMUNIT,ELDCH,YNGCH,NSIBS,RELATE,AGE,SEX,RACE,MARST,CHBORN,BPL,SCHOOL,EDUCREC,SCHLTYPE,EMPSTAT," +
+        "LABFORCE,OCC1950,OCCSCORE,SEI,IND1950,CLASSWKR,WKSWORK2,HRSWORK2,YRLASTWK,WORKEDYR,INCTOT," +
+        "INCWAGE,INCBUS,INCFARM,INCSS,INCWELFR,INCOTHER,POVERTY,MIGRATE5,MIGPLAC5,MOVEDIN,VETSTAT,TRANWORK," +
+        "BPL.DESCRIPTION,CHBORN.DESCRIPTION,OCC1950.DESCRIPTION,MIGPLAC5.DESCRIPTION " +
+        "FROM MAIN " +
+        "INNER JOIN BPL ON MAIN.BPL=BPL.ID " +
+        "INNER JOIN CHBORN ON MAIN.CHBORN=CHBORN.ID " +
+        "INNER JOIN OCC1950 ON MAIN.OCC1950=OCC1950.ID " +
+        "INNER JOIN MIGPLAC5 ON MAIN.MIGPLAC5=MIGPLAC5.ID ";
+
+    /**
+     * fillCustomer populates the Customer Object from the Resultset
+     * @param rsIn ResultSet
+     * @return Customer
+     */
+    private Customer fillCustomer (ResultSet rsIn){
+
+        Customer c = new Customer();
+
+        try{
+            c.setAge(rsIn.getInt(30));                        //AGE
+            c.setAgeOfEldestChild(rsIn.getInt(26));           //ELDCH
+            c.setAgeOfYoungestChild(rsIn.getInt(27));         //YNGCH
+            c.setBirthplace(rsIn.getString(63));              //BPL.DESCRIPTION
+            c.setChildBorn(rsIn.getString(64));               //CHBORN.DESCRIPTION
+            c.setEducationLevel(rsIn.getInt(37));             //EDUCREC
+            c.setEmploymentStatus(rsIn.getInt(39));           //EMPSTAT
+            c.setFamilyMembership(rsIn.getInt(25));           //FAMUNIT
+            c.setFarmIncome(rsIn.getInt(53));                 //INCFARM
+            c.setFarmStatus(rsIn.getInt(5));                  //FARM
+            c.setFathersLocationInHouse(rsIn.getInt(17));     //POPLOC
+            c.setGender(rsIn.getInt(31));                     //SEX
+            c.setId(rsIn.getInt(1));                          //MAIN.ID
+            c.setIndustry1950Basis(rsIn.getInt(44));          //IND1950
+            c.setLaborForce(rsIn.getInt(40));                 //LABFORCE
+            c.setLastYearWorked(rsIn.getInt(48));             //YRLASTWK
+            c.setLinkToFather(rsIn.getInt(19));               //POPRULE
+            c.setLinkToMother(rsIn.getInt(16));               //MOMRULE
+            c.setLinkToSpouse(rsIn.getInt(21));               //SPRULE
+            c.setMaritalStatus(rsIn.getInt(33));              //MARST
+            c.setMothersLocationInHouse(rsIn.getInt(14));     //MOMLOC
+            c.setMovedInCode(rsIn.getInt(60));                //MOVEDIN
+            c.setNonFarmBusinessIncome(rsIn.getInt(52));      //INCBUS
+            c.setNumChildenUnderFiveInHouse(rsIn.getInt(24)); //NCHLT5
+            c.setNumChildrenInHouse(rsIn.getInt(23));         //NCHILD
+            c.setNumCouplesInHouse(rsIn.getInt(11));          //NCOUPLES
+            c.setNumFamiliesInHouse(rsIn.getInt(10));         //NFAMS
+            c.setNumFamilyMembersInHouse(rsIn.getInt(22));    //FAMSIZE
+            c.setNumFathersInHouse(rsIn.getInt(13));          //NFATHERS
+            c.setNumMothersInHouse(rsIn.getInt(12));          //NMOTHERS
+            c.setNumSiblingsInHouse(rsIn.getInt(28));         //NSIBS
+            c.setOccupation(rsIn.getString(65));              //OCC1950.DESCRIPTION
+            c.setOccupation1950Basis(rsIn.getInt(42));        //OCC1950
+            c.setOccupationIncomeScore(rsIn.getInt(32));      //OCCSCORE
+            c.setOtherIncome(rsIn.getInt(56));                //INCOTHER
+            c.setOwnership(rsIn.getInt(6));                   //OWNERSHP
+            c.setPovertyStatus(rsIn.getInt(57));              //POVERTY
+            c.setProbableStepFather(rsIn.getInt(18));         //STEPPOP
+            c.setProbableStepMother(rsIn.getInt(15));         //STEPMOM
+            c.setRace(rsIn.getInt(32));                       //RACE
+            c.setRelationshipWHouseholder(rsIn.getInt(29));   //RELATE
+            c.setRent(rsIn.getInt(8));                        //RENT
+            c.setResidence5YearsAgo(rsIn.getString(66));      //MIGPLAC5.DESCRIPTION
+            c.setResidentialStatus(rsIn.getInt(58));          //MIGRATE5
+            c.setSchoolStatus(rsIn.getInt(35));               //SCHOOL
+            c.setSchoolType(rsIn.getInt(38));                 //SCHLTYPE
+            c.setSocialSecurityIncome(rsIn.getInt(54));       //INCSS
+            c.setSocioEconomicIndex(rsIn.getInt(40));         //SEI
+            c.setSpouseLocationInHouse(rsIn.getInt(20));      //SPLOC
+            c.setTotalFamilyIncome(rsIn.getInt(9));           //FTOCINC
+            c.setTotalPersonalIncome(rsIn.getInt(50));        //INCTOT
+            c.setValue(rsIn.getInt(7));                       //VALUE
+            c.setVeteranStatus(rsIn.getInt(61));              //VETSTAT
+            c.setWageAndSalaryIncome(rsIn.getInt(51));        //INCWAGE
+            c.setWeeksWorkedPerYear(rsIn.getInt(46));         //WKSWORK2
+            c.setWelfareIncome(rsIn.getInt(55));              //INCWELFR
+            c.setWorkClass(rsIn.getInt(45));                  //CLASSWKR
+            c.setWorkHours(rsIn.getInt(47));                  //HRSWORK2
+        }
+        catch(SQLException e){
+            System.out.println("fillCustomer Failed: " + e.toString());
+        }
+
+        return c;
+    }
+    /**
+     * selectCustomer retrieves a customer from the main table
+     * @param idIn integer
+     * @return Customer
+     */
+    public Customer selectCustomer(int idIn){
+
+        ResultSet rs;
+        Statement s;
+        Connection conn = DerbyDAOFactory.getConnection();
+        Customer c = new Customer();
+        String selectQuery = queryStatement + "WHERE MAIN.ID = " + Integer.toString(idIn);
+
+        try{
+            s = conn.createStatement();
+            rs = s.executeQuery(selectQuery);
+            boolean foundRec = rs.next();
+            if (foundRec){
+                c = fillCustomer(rs);
+            } else
+                return null;
+        }
+        catch(SQLException e){
+            System.out.println("Select Customer Failed: " + e.toString());
+        }
+
+        return c;
+    }
+}
+

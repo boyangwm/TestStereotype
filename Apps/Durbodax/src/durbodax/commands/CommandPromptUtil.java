@@ -1,0 +1,31 @@
+package durbodax.commands;
+
+import java.util.HashMap;
+
+
+/**
+ *
+ * @author Kirk Seddon
+ */
+public class CommandPromptUtil {
+    
+    private static HashMap commandPrompts = new HashMap();
+    
+    private CommandPromptUtil() {}
+    
+    public static final CommandPrompt getCommandPrompt(String name) {
+        
+        CommandPrompt prompt = ((CommandPrompt)commandPrompts.get(name.toLowerCase()));
+ 
+        return prompt;
+        
+    }    
+    
+    public static final void registerCommandPrompt(String name, CommandPrompt prompt) {
+        
+        commandPrompts.put(name.toLowerCase(), prompt);
+        
+    }
+
+}
+

@@ -1,0 +1,102 @@
+/*
+ * To change this template, choose Tools | Templates
+ * and open the template in the editor.
+ */
+
+package durbodax.commands;
+
+import durbodax.daos.*;
+import durbodax.dtos.*;
+import java.util.*;
+
+/**
+ *
+ * @author e0040230
+ */
+public class GetMarketingTopBottom implements Command {
+
+    public GetMarketingTopBottom() {}
+
+    private MarketingRequestDTO parseInput (String[] paramsIn){
+
+        String[] sAge = null;
+        sAge = paramsIn[3].split("-");
+        String[] sIncome = null;
+        sIncome = paramsIn[4].split("-");
+
+        MarketingRequestDTO m = new MarketingRequestDTO();
+
+        try{
+            m.setTopOrBottom(paramsIn[1]);
+            m.setGroupSize(Integer.parseInt(paramsIn[2]));
+            m.setAgeFrom(Integer.parseInt(sAge[0]));
+            //set end of range = beginning if only 1 number provided
+            if (sAge.length == 2){
+                m.setAgeTo(Integer.parseInt(sAge[1]));
+            } else {
+                m.setAgeTo(m.getAgeFrom());
+            }
+            m.setIncomeFrom(Integer.parseInt(sIncome[0]));
+            //set end of range = beginning if only 1 number provided
+            if (sIncome.length == 2){
+                m.setIncomeTo(Integer.parseInt(sIncome[1]));
+            } else {
+                m.setIncomeTo(m.getIncomeFrom());
+            }
+            if (paramsIn[5].equals("ALL")){
+                m.setBirthPlace(0);
+            } else {
+                m.setBirthPlace(Integer.parseInt(paramsIn[5]));
+                if (m.getBirthPlace() == 0) {
+                    throw new Exception ("Invalid input parameters");
+                }
+            }
+            if (paramsIn[6].equals("ALL")){
+                m.setMaritalStatus(0);
+            } else {
+                m.setMaritalStatus(Integer.parseInt(paramsIn[6]));
+                if (m.getMaritalStatus() == 0) {
+                    throw new Exception ("Invalid input parameters");
+                }
+            }
+        }
+        catch(Exception e) {
+            return null;
+        }
+
+        return m;
+    }
+
+    private void printOutput(ArrayList<MarketingResponseDTO> mresultIn){
+
+
+        if (mresultIn.size() == 0){
+            System.out.println("No Records found:  Please change parameters and retry.");
+        }
+
+        for (int i=0;i<mresultIn.size();i++){
+          MarketingResponseDTO m = mresultIn.get(i);
+          System.out.println("ID = " + m.getId() + " Age = " + m.getAge() + 
+            " Income = " + m.getIncome()+ " BPL = " + m.getBirthPlace().substring(0, 13) +
+            "Marital Status " + m.getMaritalStatusEnum());
+        }
+    }
+
+    public Object execute(String[] params) {
+
+        Object retObj = new Object();
+        MarketingRequestDTO mReq = parseInput(params);
+
+        if (mReq != null){
+           MarketingDAO instance = DAOFactory.getDAOFactory().getMarketingDAO();
+           ArrayList<MarketingResponseDTO> mresult = instance.selectMarketingStatsTopBottom(mReq);
+           retObj = mresult;
+           printOutput(mresult);
+        }
+        else{
+           System.out.println ("Usage:Top or Bottom GroupSize FromAge-ToAge FromIncome-toIncome Birthplace MaritalStatus");
+           System.out.println ("EX:  GetMarketingTopBottom TOP 10 50-90 40000-75000 1 1");
+        }
+        return retObj;
+    }
+}

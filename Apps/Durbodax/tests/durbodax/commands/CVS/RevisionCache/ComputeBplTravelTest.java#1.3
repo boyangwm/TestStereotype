@@ -1,0 +1,73 @@
+/*
+ * To change this template, choose Tools | Templates
+ * and open the template in the editor.
+ */
+
+package durbodax.commands;
+
+import org.junit.After;
+import org.junit.AfterClass;
+import org.junit.Before;
+import org.junit.BeforeClass;
+import org.junit.Test;
+import static org.junit.Assert.*;
+
+/**
+ *
+ * @author GCB
+ */
+public class ComputeBplTravelTest {
+
+    public ComputeBplTravelTest() {
+    }
+
+    @BeforeClass
+    public static void setUpClass() throws Exception {
+    }
+
+    @AfterClass
+    public static void tearDownClass() throws Exception {
+    }
+
+    @Before
+    public void setUp() {
+    }
+
+    @After
+    public void tearDown() {
+    }
+
+    /**
+     * Test of execute method, of class ComputeBplTravel.
+     */
+    @Test
+    public void testExecute() {
+        System.out.println("execute");
+        String[] params = new String[2];
+        ComputeBplTravel instance = new ComputeBplTravel();
+        //test1 - Europe
+        params[0] = "ComputeBplTravel";
+        params[1] = "32266";
+        Object test1Obj = instance.execute(params);
+        int result = (Integer)instance.execute(params);
+        int expResult = 500;
+        assertEquals(expResult, result);
+        //test2 - South America
+        params[0] = "ComputeBplTravel";
+        params[1] = "412";
+        result = (Integer)instance.execute(params);
+        expResult = 300; 
+        assertEquals(expResult, result);
+        //test3 - Africa
+        params[0] = "ComputeBplTravel";
+        params[1] = "237";
+        expResult = 1000;
+        assertEquals(expResult, result);
+        //test4 - Asia
+        params[0] = "ComputeBplTravel";
+        params[1] = "86701";
+        result = (Integer)instance.execute(params);
+        expResult = 888;
+        assertEquals(expResult, result);
+    }
+}
