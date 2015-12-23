@@ -1,3 +1,5 @@
+package edu.wm.core;
+
 public class HelloWorld 
 {
 	

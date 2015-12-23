@@ -1,3 +1,5 @@
+package edu.wm.core;
+
 import static org.junit.Assert.*;
 
 import org.junit.Before;

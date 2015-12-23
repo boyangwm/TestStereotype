@@ -1,4 +1,4 @@
-package edu.wm.core;
+package edu.wm.constants;
 
 public class ConfigConstants {
 	
