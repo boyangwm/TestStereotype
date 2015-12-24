@@ -19,7 +19,10 @@ import org.eclipse.jdt.core.dom.MarkerAnnotation;
 import org.eclipse.jdt.core.dom.MethodDeclaration;
 import org.eclipse.jdt.core.dom.TypeDeclaration;
 
+import edu.wm.ast.MarkerAnnotationVisitor;
 import edu.wm.ast.MethodDeclarationVisitor;
+import edu.wm.ast.UtilAST;
+import edu.wm.constants.TestAnnotation;
 import edu.wm.exception.ProjectNotExistException;
 import edu.wm.exception.ReadingFileException;
 
@@ -35,6 +38,9 @@ public class TestStereotypeAnalyzer {
 
 	//Map of method signature to method defination
 	public HashMap<String, MethodDeclaration> mapSignToMethod = new  HashMap<String, MethodDeclaration>();
+	
+	//Map of method signature to tests
+	public HashMap<String, TestUnderAnalysis> mapSignToTest = new  HashMap<String, TestUnderAnalysis>();
 
 
 	/**
@@ -43,14 +49,18 @@ public class TestStereotypeAnalyzer {
 	 * @throws Exception
 	 */
 	public void analyze(String projectLoc) throws Exception{
+		//Load all method information
 		loadFilesInfo(projectLoc);
 		
-		
+		//Detect test cases
+		//detectTestCases();
+
+
 	}
 
 
 	//load all java files' info into the memory
-	public void loadFilesInfo(String projectLoc) throws ProjectNotExistException, IOException{
+	private void loadFilesInfo(String projectLoc) throws ProjectNotExistException, IOException{
 		this.projectLoc = projectLoc;
 		String currentFile = "";
 		Collection<File> files = null;
@@ -82,15 +92,32 @@ public class TestStereotypeAnalyzer {
 				for (MethodDeclaration method : visitor.getMethods()) {
 					String sign = UtilAST.getMethodSignature(method);
 					mapSignToMethod.put(sign, method);
-				}
-				cu.accept(new ASTVisitor(){
-					@Override public boolean visit(MarkerAnnotation makerAnnotation) {
-						System.out.println("maker:" + makerAnnotation.getTypeName());
-						return false;
+					//If it's a test case, put the method into the map.
+					String annotation = ReturnAnnotation(method);
+					if(TestAnnotation.contains(annotation)){
+						TestUnderAnalysis testMethod = new TestUnderAnalysis(method, annotation);
+						mapSignToTest.put(sign, testMethod);
 					}
-				});
+				}
 			}
 		}
 	}
+	
+	
+	
+	/**
+	 * Returns the annotation of the given method
+	 * @param method
+	 * @return
+	 */
+	private String ReturnAnnotation(MethodDeclaration method){
+		MarkerAnnotationVisitor visitorAnnotation = new MarkerAnnotationVisitor();
+		method.accept(visitorAnnotation);
+		if(visitorAnnotation.getAnnotation() != null){
+			return visitorAnnotation.getAnnotation().getTypeName().getFullyQualifiedName();
+		}
+		return "";
+	}
+
 
 }

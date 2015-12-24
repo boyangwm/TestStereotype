@@ -12,7 +12,7 @@ public class MethodDeclarationVisitor extends ASTVisitor {
   @Override
   public boolean visit(MethodDeclaration node) {
     methods.add(node);
-    return super.visit(node);
+    return true;
   }
 
   public List<MethodDeclaration> getMethods() {

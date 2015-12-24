@@ -1,4 +1,4 @@
-package edu.wm.core;
+package edu.wm.ast;
 
 import java.util.Hashtable;
 import java.util.List;

@@ -7,22 +7,45 @@ public enum TestAnnotation {
 	AfterClass ("afterclass"),
 	Test ("test"),
 	Ignore("ignore");
-	
+
 	//@Test(timeout=500)
 	//@Test(expected=IllegalArgumentException.class)
 
-    private final String name;       
+	private final String name;       
 
-    private TestAnnotation(String s) {
-        name = s;
-    }
+	
+	private TestAnnotation(String s) {
+		name = s;
+	}
 
-    public boolean equalsName(String otherName) {
-        return (otherName == null) ? false : name.equals(otherName);
-    }
+	
+	/**
+	 * Return true if TestAnnotation contains the given name
+	 * @param name
+	 * @return
+	 */
+	public static boolean contains(String name){
+		for (TestAnnotation annotation : TestAnnotation.values()) {
+			if(name.toLowerCase().equals(annotation.name)){
+				return true;
+			}
+		}
+		return false;
+	}
 
-    public String toString() {
-       return this.name;
-    }
-    
+	
+	/**
+	 * 
+	 * @param otherName
+	 * @return
+	 */
+	public boolean equalsName(String otherName) {
+		return (otherName == null) ? false : name.equals(otherName.toLowerCase());
+	}
+
+	
+	public String toString() {
+		return this.name;
+	}
+
 }
