@@ -21,13 +21,14 @@ public class TestHelloWorld {
    {
       assertEquals(h.getName(),"");
       assertEquals(h.getMessage(),"Hello!");
+      Assert.
    }
 	
    @Test
    public void testHelloWorld() 
    {
       h.setName("World");
-      assertEquals(h.getName(),"World");
+      Assert.assertEquals(h.getName(),"World");
       assertEquals(h.getMessage(),"Hello World!");
    }
 }

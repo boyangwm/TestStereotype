@@ -19,6 +19,7 @@ import org.eclipse.jdt.core.dom.MarkerAnnotation;
 import org.eclipse.jdt.core.dom.MethodDeclaration;
 import org.eclipse.jdt.core.dom.TypeDeclaration;
 
+import edu.wm.ast.AssertionInvocationVisitor;
 import edu.wm.ast.MarkerAnnotationVisitor;
 import edu.wm.ast.MethodDeclarationVisitor;
 import edu.wm.ast.UtilAST;
@@ -36,7 +37,7 @@ public class TestStereotypeAnalyzer {
 	//All java files in the project 
 	//public HashSet<String> javaFiles = new HashSet<String>();
 
-	//Map of method signature to method defination
+	//Map of method signature to method definition
 	public HashMap<String, MethodDeclaration> mapSignToMethod = new  HashMap<String, MethodDeclaration>();
 	
 	//Map of method signature to tests
@@ -52,14 +53,21 @@ public class TestStereotypeAnalyzer {
 		//Load all method information
 		loadFilesInfo(projectLoc);
 		
-		//Detect test cases
-		//detectTestCases();
-
-
+		//Analyze all the test cases
+		AnalyzeTestCases();
+		
+		//Rule matching
+		
 	}
 
 
-	//load all java files' info into the memory
+
+	/**
+	 * load all java files' info into the memory
+	 * @param projectLoc
+	 * @throws ProjectNotExistException
+	 * @throws IOException
+	 */
 	private void loadFilesInfo(String projectLoc) throws ProjectNotExistException, IOException{
 		this.projectLoc = projectLoc;
 		String currentFile = "";
@@ -118,6 +126,31 @@ public class TestStereotypeAnalyzer {
 		}
 		return "";
 	}
+	
+	
+	
+	
+	/**
+	 * Analyzes all detected test cases
+	 */
+	private void AnalyzeTestCases(){
+		
+		for (Map.Entry<String, TestUnderAnalysis> entry : mapSignToTest.entrySet()) {
+		    TestUnderAnalysis test = entry.getValue();
+		    AnalyzeTest(test);
+		}
+	}
 
+	
+	
+	/**
+	 * Analyzes the given test cases
+	 */
+	private void AnalyzeTest(TestUnderAnalysis test){
+		AssertionInvocationVisitor assertionVisitor = new AssertionInvocationVisitor();
+		test.getMethod().accept(assertionVisitor);
+		test.setAssertionStmts(assertionVisitor.getAssertions());
+	}
+	
 
 }
