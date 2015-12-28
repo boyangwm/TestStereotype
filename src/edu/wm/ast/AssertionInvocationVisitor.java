@@ -9,7 +9,7 @@ import org.eclipse.jdt.core.dom.MethodInvocation;
 import edu.wm.constants.Assertions;
 
 public class AssertionInvocationVisitor extends ASTVisitor {
-	List<MethodInvocation> methods = new ArrayList<MethodInvocation>();
+	ArrayList<MethodInvocation> methods = new ArrayList<MethodInvocation>();
 
 	@Override
 	public boolean visit(MethodInvocation node) {
@@ -20,7 +20,7 @@ public class AssertionInvocationVisitor extends ASTVisitor {
 		return true;
 	}
 
-	public List<MethodInvocation> getAssertions() {
+	public ArrayList<MethodInvocation> getAssertions() {
 		return methods;
 	}
 } 

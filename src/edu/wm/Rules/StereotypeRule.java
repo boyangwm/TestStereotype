@@ -1,5 +1,7 @@
 package edu.wm.Rules;
 
+import org.eclipse.jdt.core.dom.MethodInvocation;
+
 import edu.wm.constants.TestStereotype;
 import edu.wm.core.TestUnderAnalysis;
 
@@ -42,6 +44,11 @@ public abstract class StereotypeRule {
      */
     private void InitializeMembers() {
 
+    }
+    
+    
+    protected String getAssertionName(MethodInvocation assertion){
+    	return assertion.getName().getFullyQualifiedName();
     }
     
     

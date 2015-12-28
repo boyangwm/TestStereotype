@@ -2,6 +2,7 @@ package edu.wm.core;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -19,11 +20,14 @@ import org.eclipse.jdt.core.dom.MarkerAnnotation;
 import org.eclipse.jdt.core.dom.MethodDeclaration;
 import org.eclipse.jdt.core.dom.TypeDeclaration;
 
+import edu.wm.Rules.JavaJunit4Collector;
+import edu.wm.Rules.RuleCollector;
 import edu.wm.ast.AssertionInvocationVisitor;
 import edu.wm.ast.MarkerAnnotationVisitor;
 import edu.wm.ast.MethodDeclarationVisitor;
 import edu.wm.ast.UtilAST;
 import edu.wm.constants.TestAnnotation;
+import edu.wm.constants.TestStereotype;
 import edu.wm.exception.ProjectNotExistException;
 import edu.wm.exception.ReadingFileException;
 
@@ -42,6 +46,7 @@ public class TestStereotypeAnalyzer {
 	
 	//Map of method signature to tests
 	public HashMap<String, TestUnderAnalysis> mapSignToTest = new  HashMap<String, TestUnderAnalysis>();
+	
 
 
 	/**
@@ -57,6 +62,11 @@ public class TestStereotypeAnalyzer {
 		AnalyzeTestCases();
 		
 		//Rule matching
+		RuleMatching();
+		
+		
+		
+		printTestType();
 		
 	}
 
@@ -150,6 +160,32 @@ public class TestStereotypeAnalyzer {
 		AssertionInvocationVisitor assertionVisitor = new AssertionInvocationVisitor();
 		test.getMethod().accept(assertionVisitor);
 		test.setAssertionStmts(assertionVisitor.getAssertions());
+	}
+	
+	
+	private void RuleMatching(){
+		RuleCollector ruleCollectorJunit4 = new JavaJunit4Collector();
+		for (Map.Entry<String, TestUnderAnalysis>  entry : mapSignToTest.entrySet()) {
+		    String key = entry.getKey();
+		    TestUnderAnalysis test = entry.getValue();
+		    test.applyRuleCollector(ruleCollectorJunit4);
+		}
+	}
+	
+	
+	
+	private void printTestType(){
+		RuleCollector ruleCollectorJunit4 = new JavaJunit4Collector();
+		for (Map.Entry<String, TestUnderAnalysis>  entry : mapSignToTest.entrySet()) {
+			System.out.println("\nMethod : " + entry.getKey());
+			TestUnderAnalysis test = entry.getValue();
+			ArrayList<TestStereotype> rules = test.getMatchedRules();
+			System.out.println("Rules : ");
+			for(TestStereotype rule : rules){
+				System.out.println(rule.toString());
+			}
+			
+		}
 	}
 	
 

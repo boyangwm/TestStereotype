@@ -21,7 +21,6 @@ public class TestHelloWorld {
    {
       assertEquals(h.getName(),"");
       assertEquals(h.getMessage(),"Hello!");
-      Assert.
    }
 	
    @Test

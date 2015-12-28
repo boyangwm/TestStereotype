@@ -14,8 +14,6 @@ public class RuleCollector {
 	public ArrayList<StereotypeRule> rules;
 	
 	
-	
-	
     /**
      * Initializes the list of rules. 
      */
@@ -25,6 +23,10 @@ public class RuleCollector {
     
     
 
+	/**
+	 * @param test
+	 * @return
+	 */
 	public ArrayList<TestStereotype> ApplyRules(TestUnderAnalysis test) {
 		ArrayList<TestStereotype> matchedStereotypes = new ArrayList<TestStereotype>();
         if(this.rules == null) { DefineRuleSet(); }

@@ -6,29 +6,64 @@ import java.util.List;
 import org.eclipse.jdt.core.dom.MethodDeclaration;
 import org.eclipse.jdt.core.dom.MethodInvocation;
 
+import edu.wm.Rules.RuleCollector;
+import edu.wm.constants.TestStereotype;
+
 public class TestUnderAnalysis {
-	
+
 	/**
 	 * AST node (MethodDeclaration)
 	 */
 	private MethodDeclaration method;
-	
+
 	/**
 	 * Record the annotation of the test case
 	 */
 	private String annotation;
-	
-	
+
+
 	/**
 	 * All assertions in the current method
 	 */
-	private List<MethodInvocation > assertionStmts = new ArrayList<MethodInvocation>();
+	private ArrayList<MethodInvocation> assertionStmts = new ArrayList<MethodInvocation>();
 
+
+
+
+	ArrayList<TestStereotype> matchedRules = new ArrayList<TestStereotype>(); //ruleCollector.ApplyRules(test);
 	
+	
+	
+	/**
+	 * @return the matchedRules
+	 */
+	public ArrayList<TestStereotype> getMatchedRules() {
+		return matchedRules;
+	}
+
+
+	/**
+	 * @param matchedRules the matchedRules to set
+	 */
+	public void setMatchedRules(ArrayList<TestStereotype> matchedRules) {
+		this.matchedRules = matchedRules;
+	}
+
+
+	/**
+	 * Apply collector and infer new types
+	 * @param collector
+	 */
+	public void applyRuleCollector(RuleCollector collector){
+		ArrayList<TestStereotype> newMatchedRules = collector.ApplyRules(this);
+		this.matchedRules.addAll(newMatchedRules);
+	}
+
+
 	/**
 	 * @return the assertionStmts
 	 */
-	public List<MethodInvocation> getAssertionStmts() {
+	public ArrayList<MethodInvocation> getAssertionStmts() {
 		return assertionStmts;
 	}
 
@@ -36,7 +71,7 @@ public class TestUnderAnalysis {
 	/**
 	 * @param assertionStmts the assertionStmts to set
 	 */
-	public void setAssertionStmts(List<MethodInvocation> assertionStmts) {
+	public void setAssertionStmts(ArrayList<MethodInvocation> assertionStmts) {
 		this.assertionStmts = assertionStmts;
 	}
 
@@ -45,8 +80,8 @@ public class TestUnderAnalysis {
 		this.method = method;
 		this.annotation = annotation;
 	}
-	
-	
+
+
 	/**
 	 * @return the annotation
 	 */
@@ -76,7 +111,7 @@ public class TestUnderAnalysis {
 		this.method = method;
 	}
 
-	
-	
+
+
 
 }

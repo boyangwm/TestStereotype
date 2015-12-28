@@ -1,8 +1,5 @@
 package edu.wm.core;
 
-import java.nio.file.Path;
-import java.nio.file.Paths;
-
 import edu.wm.constants.ConfigConstants;
 import edu.wm.exception.ProjectNotExistException;
 import edu.wm.exception.ReadingFileException;
