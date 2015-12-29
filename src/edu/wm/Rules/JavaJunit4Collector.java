@@ -14,10 +14,14 @@ public class JavaJunit4Collector extends RuleCollector {
 	 */
 	@Override
 	protected void DefineRuleSet() {
-		
 		ArrayList<StereotypeRule> ruleList = new ArrayList<StereotypeRule>();
 		ruleList.add(new RuleConditionVerifier());
 		ruleList.add(new RuleEqualityVerifier());
+		ruleList.add(new RuleUtilityVerifier());
+		ruleList.add(new RuleIdentityVerifier());
+		ruleList.add(new RuleUtilityVerifier());
+		
+		ruleList.add(new RuleHybridVerifier()); //Should be the last one 
 		this.rules = ruleList;
 	}
 

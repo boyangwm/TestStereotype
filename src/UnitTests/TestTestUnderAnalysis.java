@@ -2,8 +2,10 @@ package UnitTests;
 
 import static org.junit.Assert.*;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.eclipse.jdt.core.dom.AST;
@@ -16,11 +18,15 @@ import org.junit.Test;
 
 import edu.wm.ast.AssertionInvocationVisitor;
 import edu.wm.ast.MethodDeclarationVisitor;
+import edu.wm.constants.TestAnnotation;
+import edu.wm.constants.TestStereotype;
+import edu.wm.core.TestStereotypeAnalyzer;
+import edu.wm.core.TestUnderAnalysis;
 
 
 public class TestTestUnderAnalysis {
 
-	
+
 	@Test
 	public void TestAssertionName1(){
 		ASTParser parser = ASTParser.newParser(AST.JLS3);
@@ -33,8 +39,8 @@ public class TestTestUnderAnalysis {
 				+ "		}  "
 				+ "}").toCharArray());
 		parser.setKind(ASTParser.K_COMPILATION_UNIT);
-		
- 
+
+
 		final CompilationUnit cu = (CompilationUnit) parser.createAST(null);
 		MethodDeclarationVisitor methodVisitor = new MethodDeclarationVisitor();
 		cu.accept(methodVisitor);
@@ -47,9 +53,9 @@ public class TestTestUnderAnalysis {
 			}
 		}
 	}
-	
-	
-	
+
+
+
 	@Test
 	public void TestAssertionName2(){
 		ASTParser parser = ASTParser.newParser(AST.JLS3);
@@ -61,8 +67,8 @@ public class TestTestUnderAnalysis {
 				+ "		}  "
 				+ "}").toCharArray());
 		parser.setKind(ASTParser.K_COMPILATION_UNIT);
-		
- 
+
+
 		final CompilationUnit cu = (CompilationUnit) parser.createAST(null);
 		MethodDeclarationVisitor methodVisitor = new MethodDeclarationVisitor();
 		cu.accept(methodVisitor);
@@ -75,4 +81,113 @@ public class TestTestUnderAnalysis {
 			}
 		}
 	}
+
+
+	@Test
+	public void TestAssertionTypeCondition(){
+		String methodTest = "public class A { "
+				+ "		@Test "
+				+ "		public void testHelloWorld() { "
+				+ " 		h.setBool(false);"
+				+ "			assertTrue(h.getBool(),false); "
+				+ "		}  "
+				+ "}";
+		TestStereotypeAnalyzer analyzer = new TestStereotypeAnalyzer();
+		try {
+			analyzer.analyzeString(methodTest);
+			for (Map.Entry<String, TestUnderAnalysis>  entry : analyzer.mapSignToTest.entrySet()) {
+				TestUnderAnalysis test = entry.getValue();
+				ArrayList<TestStereotype> rules = test.getMatchedRules();
+				for(TestStereotype rule : rules){
+					assertEquals(TestStereotype.Condition, rule);
+				}
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
+
+
+	@Test
+	public void TestAssertionTypeEquality(){
+		String methodTest = "public class A { "
+				+ "		@Test "
+				+ "		public void testHelloWorld() { "
+				+ " 		h.setName(\"World\");"
+				+ "			Assert.assertEquals(h.getName(),\"World\");    "
+				+ "			assertEquals(h.getMessage(),\"Hello World!\"); "
+				+ "		}  "
+				+ "}";
+		TestStereotypeAnalyzer analyzer = new TestStereotypeAnalyzer();
+		try {
+			analyzer.analyzeString(methodTest);
+			for (Map.Entry<String, TestUnderAnalysis>  entry : analyzer.mapSignToTest.entrySet()) {
+				TestUnderAnalysis test = entry.getValue();
+				ArrayList<TestStereotype> rules = test.getMatchedRules();
+				for(TestStereotype rule : rules){
+					assertEquals(TestStereotype.Equality, rule);
+				}
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
+
+	@Test
+	public void TestAssertionTypeIdentity(){
+		String methodTest = "public class A { "
+				+ "		@Test "
+				+ "		public void testHelloWorld() { "
+				+ " 		h.setName(\"World\");"
+				+ "			assertSame(h.getMessage(),\"Hello World!\"); "
+				+ "		}  "
+				+ "}";
+		TestStereotypeAnalyzer analyzer = new TestStereotypeAnalyzer();
+		try {
+			analyzer.analyzeString(methodTest);
+			for (Map.Entry<String, TestUnderAnalysis>  entry : analyzer.mapSignToTest.entrySet()) {
+				TestUnderAnalysis test = entry.getValue();
+				ArrayList<TestStereotype> rules = test.getMatchedRules();
+				for(TestStereotype rule : rules){
+					assertEquals(TestStereotype.Identity, rule);
+				}
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
+
+
+	@Test
+	public void TestAssertionTypeUtility(){
+		String methodTest =  "public class A { "
+				+ "		@Test "
+				+ "		test_addNilThrowsNullPointerException()"
+				+"		{"
+				+"			try {"
+				+"					foo.add(NIL);                    "
+				+"					fail(\"No NullPointerException\");  "            
+				+"			} catch (Exception e) {"
+				+"			}"
+				+"		}"
+				+"}";
+				TestStereotypeAnalyzer analyzer = new TestStereotypeAnalyzer();
+		try {
+			analyzer.analyzeString(methodTest);
+			for (Map.Entry<String, TestUnderAnalysis>  entry : analyzer.mapSignToTest.entrySet()) {
+				TestUnderAnalysis test = entry.getValue();
+				ArrayList<TestStereotype> rules = test.getMatchedRules();
+				for(TestStereotype rule : rules){
+					assertEquals(TestStereotype.Utility, rule);
+				}
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
+
 }

@@ -29,6 +29,10 @@ public class RuleEqualityVerifier extends StereotypeRule {
 			String assertionName = getAssertionName(assertion);
 			if(assertionName.equals(Assertions.assertEquals.name())){
 				numOfMatches++;
+			}else if(assertionName.equals(Assertions.assertArrayEquals.name())){
+				numOfMatches++;
+			}else if(assertionName.equals(Assertions.assertThat.name())){
+				numOfMatches++;
 			}
 		}
 		if(assertions.size() > 0 && numOfMatches == assertions.size()){

@@ -62,11 +62,19 @@ public class UtilAST {
 			parentClass = parentClass.getParent();
 			if(parentClass instanceof TypeDeclaration){
 				ITypeBinding parentBind = ((TypeDeclaration)parentClass).resolveBinding();
-				className = parentBind.getQualifiedName();
+				if(parentBind == null){
+					className = ((TypeDeclaration)parentClass).getName().getFullyQualifiedName();
+				}else{
+					className = parentBind.getQualifiedName();
+				}
 				break;
 			}else if(parentClass instanceof EnumDeclaration){
 				ITypeBinding parentBind = ((EnumDeclaration)parentClass).resolveBinding();
-				className = parentBind.getQualifiedName();
+				if(parentBind == null){
+					className = ((TypeDeclaration)parentClass).getName().getFullyQualifiedName();
+				}else{
+					className = parentBind.getQualifiedName();
+				}
 				break;
 			}
 		}
