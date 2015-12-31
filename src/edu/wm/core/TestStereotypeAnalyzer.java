@@ -73,6 +73,11 @@ public class TestStereotypeAnalyzer {
 
 
 	
+	/**
+	 * Analyze the given string (source code)
+	 * @param FileString
+	 * @throws Exception
+	 */
 	public void analyzeString(String FileString) throws Exception{
 		//Load all method information by string
 		loadStringInfo(FileString);
@@ -130,7 +135,7 @@ public class TestStereotypeAnalyzer {
 					String sign = UtilAST.getMethodSignature(method);
 					mapSignToMethod.put(sign, method);
 					//If it's a test case, put the method into the map.
-					String annotation = ReturnAnnotation(method);
+					MarkerAnnotation annotation = ReturnAnnotation(method);
 					if(TestAnnotation.contains(annotation)){
 						TestUnderAnalysis testMethod = new TestUnderAnalysis(method, annotation);
 						mapSignToTest.put(sign, testMethod);
@@ -155,7 +160,7 @@ public class TestStereotypeAnalyzer {
 			String sign = UtilAST.getMethodSignature(method);
 			mapSignToMethod.put(sign, method);
 			//If it's a test case, put the method into the map.
-			String annotation = ReturnAnnotation(method);
+			MarkerAnnotation annotation = ReturnAnnotation(method);
 			if(TestAnnotation.contains(annotation)){
 				TestUnderAnalysis testMethod = new TestUnderAnalysis(method, annotation);
 				mapSignToTest.put(sign, testMethod);
@@ -168,13 +173,14 @@ public class TestStereotypeAnalyzer {
 	 * @param method
 	 * @return
 	 */
-	public String ReturnAnnotation(MethodDeclaration method){
+	public MarkerAnnotation ReturnAnnotation(MethodDeclaration method){
 		MarkerAnnotationVisitor visitorAnnotation = new MarkerAnnotationVisitor();
 		method.accept(visitorAnnotation);
 		if(visitorAnnotation.getAnnotation() != null){
-			return visitorAnnotation.getAnnotation().getTypeName().getFullyQualifiedName();
+			return visitorAnnotation.getAnnotation();
+			//return visitorAnnotation.getAnnotation().getTypeName().getFullyQualifiedName();
 		}
-		return "";
+		return null;
 	}
 
 
@@ -222,7 +228,7 @@ public class TestStereotypeAnalyzer {
 		for (Map.Entry<String, TestUnderAnalysis>  entry : mapSignToTest.entrySet()) {
 			System.out.println("\nMethod : " + entry.getKey());
 			TestUnderAnalysis test = entry.getValue();
-			ArrayList<TestStereotype> rules = test.getMatchedRules();
+			HashSet<TestStereotype> rules = test.matchedRules;
 			System.out.println("Rules : ");
 			for(TestStereotype rule : rules){
 				System.out.println(rule.toString());

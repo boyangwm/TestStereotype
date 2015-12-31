@@ -20,7 +20,8 @@ public class RuleHybridVerifier extends StereotypeRule{
 	 */
 	@Override
 	protected boolean MakeClassification(TestUnderAnalysis mAnalyzer) {
-		if(mAnalyzer.getMatchedRules().size() > 0){
+		if(mAnalyzer.matchedRules.size() > 1){
+			mAnalyzer.matchedRules.clear();
 			return true;
 		}else{
 			return false;

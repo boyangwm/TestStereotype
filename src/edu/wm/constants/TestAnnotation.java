@@ -1,5 +1,7 @@
 package edu.wm.constants;
 
+import org.eclipse.jdt.core.dom.MarkerAnnotation;
+
 public enum TestAnnotation {
 	Before ("before"),
 	BeforeClass ("beforeClass"),
@@ -24,9 +26,9 @@ public enum TestAnnotation {
 	 * @param name
 	 * @return
 	 */
-	public static boolean contains(String name){
-		for (TestAnnotation annotation : TestAnnotation.values()) {
-			if(name.toLowerCase().equals(annotation.name)){
+	public static boolean contains(MarkerAnnotation annotation){
+		for (TestAnnotation value : TestAnnotation.values()) {
+			if(annotation.getTypeName().getFullyQualifiedName().toLowerCase().equals(value.name)){
 				return true;
 			}
 		}

@@ -27,19 +27,16 @@ public class RuleCollector {
 	 * @param test
 	 * @return
 	 */
-	public ArrayList<TestStereotype> ApplyRules(TestUnderAnalysis test) {
-		ArrayList<TestStereotype> matchedStereotypes = new ArrayList<TestStereotype>();
+	public void ApplyRules(TestUnderAnalysis test) {
         if(this.rules == null) { DefineRuleSet(); }
         for(StereotypeRule rule : this.rules) {
             if(rule.RuleMatchedClass(test)) {
-            	matchedStereotypes.add(rule.GetMethodStereotype());
+            	test.matchedRules.add(rule.GetMethodStereotype());
             }
         }
-        if(matchedStereotypes.size() == 0) {
-        	matchedStereotypes.add(TestStereotype.Unclassified);
+        if(test.matchedRules.size() == 0) {
+        	test.matchedRules.add(TestStereotype.Unclassified);
         }
-        return matchedStereotypes;
-
 	}
 
 

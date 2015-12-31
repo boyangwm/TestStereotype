@@ -30,7 +30,7 @@ public class RuleIdentityVerifier extends StereotypeRule{
 				numOfMatches++;
 			}
 		}
-		if(assertions.size() > 0 && numOfMatches == assertions.size()){
+		if(assertions.size() > 0 && numOfMatches > 0){
 			return true;
 		}else{
 			return false;

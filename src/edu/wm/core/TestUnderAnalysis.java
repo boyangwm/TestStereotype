@@ -1,8 +1,11 @@
 package edu.wm.core;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
+import org.eclipse.jdt.core.dom.MarkerAnnotation;
 import org.eclipse.jdt.core.dom.MethodDeclaration;
 import org.eclipse.jdt.core.dom.MethodInvocation;
 
@@ -19,7 +22,7 @@ public class TestUnderAnalysis {
 	/**
 	 * Record the annotation of the test case
 	 */
-	private String annotation;
+	private MarkerAnnotation annotation;
 
 
 	/**
@@ -30,33 +33,16 @@ public class TestUnderAnalysis {
 
 
 
-	ArrayList<TestStereotype> matchedRules = new ArrayList<TestStereotype>(); //ruleCollector.ApplyRules(test);
+	public HashSet<TestStereotype> matchedRules = new HashSet<TestStereotype>(); //ruleCollector.ApplyRules(test);
 	
-	
-	
-	/**
-	 * @return the matchedRules
-	 */
-	public ArrayList<TestStereotype> getMatchedRules() {
-		return matchedRules;
-	}
-
-
-	/**
-	 * @param matchedRules the matchedRules to set
-	 */
-	public void setMatchedRules(ArrayList<TestStereotype> matchedRules) {
-		this.matchedRules = matchedRules;
-	}
-
 
 	/**
 	 * Apply collector and infer new types
 	 * @param collector
 	 */
 	public void applyRuleCollector(RuleCollector collector){
-		ArrayList<TestStereotype> newMatchedRules = collector.ApplyRules(this);
-		this.matchedRules.addAll(newMatchedRules);
+		collector.ApplyRules(this);
+		//this.matchedRules.addAll(newMatchedRules);
 	}
 
 
@@ -76,7 +62,7 @@ public class TestUnderAnalysis {
 	}
 
 
-	public TestUnderAnalysis(MethodDeclaration method, String annotation){
+	public TestUnderAnalysis(MethodDeclaration method, MarkerAnnotation annotation){
 		this.method = method;
 		this.annotation = annotation;
 	}
@@ -85,14 +71,14 @@ public class TestUnderAnalysis {
 	/**
 	 * @return the annotation
 	 */
-	public String getAnnotation() {
+	public MarkerAnnotation getAnnotation() {
 		return annotation;
 	}
 
 	/**
 	 * @param annotation the annotation to set
 	 */
-	public void setAnnotation(String annotation) {
+	public void setAnnotation(MarkerAnnotation annotation) {
 		this.annotation = annotation;
 	}
 

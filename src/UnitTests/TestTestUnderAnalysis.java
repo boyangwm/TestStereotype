@@ -14,6 +14,7 @@ import org.eclipse.jdt.core.dom.ASTVisitor;
 import org.eclipse.jdt.core.dom.CompilationUnit;
 import org.eclipse.jdt.core.dom.MethodDeclaration;
 import org.eclipse.jdt.core.dom.MethodInvocation;
+import org.junit.Before;
 import org.junit.Test;
 
 import edu.wm.ast.AssertionInvocationVisitor;
@@ -97,7 +98,7 @@ public class TestTestUnderAnalysis {
 			analyzer.analyzeString(methodTest);
 			for (Map.Entry<String, TestUnderAnalysis>  entry : analyzer.mapSignToTest.entrySet()) {
 				TestUnderAnalysis test = entry.getValue();
-				ArrayList<TestStereotype> rules = test.getMatchedRules();
+				HashSet<TestStereotype> rules = test.matchedRules;
 				for(TestStereotype rule : rules){
 					assertEquals(TestStereotype.Condition, rule);
 				}
@@ -124,7 +125,7 @@ public class TestTestUnderAnalysis {
 			analyzer.analyzeString(methodTest);
 			for (Map.Entry<String, TestUnderAnalysis>  entry : analyzer.mapSignToTest.entrySet()) {
 				TestUnderAnalysis test = entry.getValue();
-				ArrayList<TestStereotype> rules = test.getMatchedRules();
+				HashSet<TestStereotype> rules = test.matchedRules;
 				for(TestStereotype rule : rules){
 					assertEquals(TestStereotype.Equality, rule);
 				}
@@ -149,7 +150,7 @@ public class TestTestUnderAnalysis {
 			analyzer.analyzeString(methodTest);
 			for (Map.Entry<String, TestUnderAnalysis>  entry : analyzer.mapSignToTest.entrySet()) {
 				TestUnderAnalysis test = entry.getValue();
-				ArrayList<TestStereotype> rules = test.getMatchedRules();
+				HashSet<TestStereotype> rules = test.matchedRules;
 				for(TestStereotype rule : rules){
 					assertEquals(TestStereotype.Identity, rule);
 				}
@@ -179,9 +180,89 @@ public class TestTestUnderAnalysis {
 			analyzer.analyzeString(methodTest);
 			for (Map.Entry<String, TestUnderAnalysis>  entry : analyzer.mapSignToTest.entrySet()) {
 				TestUnderAnalysis test = entry.getValue();
-				ArrayList<TestStereotype> rules = test.getMatchedRules();
+				HashSet<TestStereotype> rules = test.matchedRules;
 				for(TestStereotype rule : rules){
 					assertEquals(TestStereotype.Utility, rule);
+				}
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+	
+	
+	
+	@Test
+	public void TestAssertionTypeHybrid(){
+		String methodTest = "public class A { "
+				+ "		@Test "
+				+ "		public void testHelloWorld() { "
+				+ " 		h.setName(\"World\");"
+				+ "			Assert.assertEquals(h.getName(),\"World\");    "
+				+ "			assertSame(h.getMessage(),\"Hello World!\"); "
+				+ "		}  "
+				+ "}";
+		TestStereotypeAnalyzer analyzer = new TestStereotypeAnalyzer();
+		try {
+			analyzer.analyzeString(methodTest);
+			for (Map.Entry<String, TestUnderAnalysis>  entry : analyzer.mapSignToTest.entrySet()) {
+				TestUnderAnalysis test = entry.getValue();
+				HashSet<TestStereotype> rules = test.matchedRules;
+				for(TestStereotype rule : rules){
+					assertEquals(TestStereotype.Hybrid, rule);
+				}
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+	
+	
+	
+	@Test
+	public void TestAssertionTypeBefore(){
+		String methodTest = "public class A { "
+			+	  "@Before"
+			+	  " public void setUp() throws Exception" 
+			+	  " {"
+			+	  "    h = new HelloWorld();"
+			+	  "}"
+			+ "}";
+		TestStereotypeAnalyzer analyzer = new TestStereotypeAnalyzer();
+		try {
+			analyzer.analyzeString(methodTest);
+			for (Map.Entry<String, TestUnderAnalysis>  entry : analyzer.mapSignToTest.entrySet()) {
+				TestUnderAnalysis test = entry.getValue();
+				HashSet<TestStereotype> rules = test.matchedRules;
+				for(TestStereotype rule : rules){
+					assertEquals(TestStereotype.Setter, rule);
+				}
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+	
+	
+	
+	
+	@Test
+	public void TestAssertionTypeAfter(){
+		String methodTest = "public class A { "
+			+	  "@AfterClass"
+			+	  " public void setUp() throws Exception" 
+			+	  " {"
+			+	  "    h = new HelloWorld();"
+			+	  "}"
+			+ "}";
+		TestStereotypeAnalyzer analyzer = new TestStereotypeAnalyzer();
+		try {
+			analyzer.analyzeString(methodTest);
+			for (Map.Entry<String, TestUnderAnalysis>  entry : analyzer.mapSignToTest.entrySet()) {
+				TestUnderAnalysis test = entry.getValue();
+				HashSet<TestStereotype> rules = test.matchedRules;
+				for(TestStereotype rule : rules){
+					assertEquals(TestStereotype.Cleaner, rule);
 				}
 			}
 		} catch (Exception e) {
