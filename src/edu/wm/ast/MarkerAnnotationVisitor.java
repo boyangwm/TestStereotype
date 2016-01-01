@@ -1,22 +1,42 @@
 package edu.wm.ast;
 
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
 
 import org.eclipse.jdt.core.dom.ASTVisitor;
+import org.eclipse.jdt.core.dom.Annotation;
 import org.eclipse.jdt.core.dom.MarkerAnnotation;
+import org.eclipse.jdt.core.dom.NormalAnnotation;
+import org.eclipse.jdt.core.dom.SingleMemberAnnotation;
 
 public class MarkerAnnotationVisitor extends ASTVisitor {
 
-	MarkerAnnotation annotation = null;
+	HashSet<Annotation> annotations = new HashSet<Annotation>();
 	@Override
 	public boolean visit(MarkerAnnotation node) {
-		annotation = node;
+		annotations.add(node);
+		return false;
+	}
+	
+	
+	
+	@Override
+	public boolean visit(NormalAnnotation node) {
+		annotations.add(node);
 		return false;
 	}
 
-	public MarkerAnnotation getAnnotation() {
-		return annotation;
+	
+	
+	@Override
+	public boolean visit(SingleMemberAnnotation node) {
+		annotations.add(node);
+		return false;
+	}
+	
+	
+
+	public HashSet<Annotation> getAnnotation() {
+		return annotations;
 	}
 }

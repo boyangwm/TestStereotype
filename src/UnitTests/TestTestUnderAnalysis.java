@@ -175,7 +175,7 @@ public class TestTestUnderAnalysis {
 				+"			}"
 				+"		}"
 				+"}";
-				TestStereotypeAnalyzer analyzer = new TestStereotypeAnalyzer();
+		TestStereotypeAnalyzer analyzer = new TestStereotypeAnalyzer();
 		try {
 			analyzer.analyzeString(methodTest);
 			for (Map.Entry<String, TestUnderAnalysis>  entry : analyzer.mapSignToTest.entrySet()) {
@@ -189,9 +189,9 @@ public class TestTestUnderAnalysis {
 			e.printStackTrace();
 		}
 	}
-	
-	
-	
+
+
+
 	@Test
 	public void TestAssertionTypeHybrid(){
 		String methodTest = "public class A { "
@@ -216,18 +216,18 @@ public class TestTestUnderAnalysis {
 			e.printStackTrace();
 		}
 	}
-	
-	
-	
+
+
+
 	@Test
 	public void TestAssertionTypeBefore(){
 		String methodTest = "public class A { "
-			+	  "@Before"
-			+	  " public void setUp() throws Exception" 
-			+	  " {"
-			+	  "    h = new HelloWorld();"
-			+	  "}"
-			+ "}";
+				+	  "@Before"
+				+	  " public void setUp() throws Exception" 
+				+	  " {"
+				+	  "    h = new HelloWorld();"
+				+	  "}"
+				+ "}";
 		TestStereotypeAnalyzer analyzer = new TestStereotypeAnalyzer();
 		try {
 			analyzer.analyzeString(methodTest);
@@ -242,19 +242,19 @@ public class TestTestUnderAnalysis {
 			e.printStackTrace();
 		}
 	}
-	
-	
-	
-	
+
+
+
+
 	@Test
 	public void TestAssertionTypeAfter(){
 		String methodTest = "public class A { "
-			+	  "@AfterClass"
-			+	  " public void setUp() throws Exception" 
-			+	  " {"
-			+	  "    h = new HelloWorld();"
-			+	  "}"
-			+ "}";
+				+	  "@AfterClass"
+				+	  " public void setUp() throws Exception" 
+				+	  " {"
+				+	  "    h = new HelloWorld();"
+				+	  "}"
+				+ "}";
 		TestStereotypeAnalyzer analyzer = new TestStereotypeAnalyzer();
 		try {
 			analyzer.analyzeString(methodTest);
@@ -270,5 +270,52 @@ public class TestTestUnderAnalysis {
 		}
 	}
 
+
+
+	@Test
+	public void TestAssertionTypeException(){
+		String methodTest = "public class A { "
+				+ 	"@Test(expected=IllegalArgumentException.class)"
+				+ 	"public void testException(String input) {"
+				+ 	"   System.out.println(\"@Test(expected) will check for specified exception during its run\");"  
+				+ 	"}"
+				+ "}";
+		TestStereotypeAnalyzer analyzer = new TestStereotypeAnalyzer();
+		try {
+			analyzer.analyzeString(methodTest);
+			for (Map.Entry<String, TestUnderAnalysis>  entry : analyzer.mapSignToTest.entrySet()) {
+				TestUnderAnalysis test = entry.getValue();
+				HashSet<TestStereotype> rules = test.matchedRules;
+				for(TestStereotype rule : rules){
+					assertEquals(TestStereotype.Exception, rule);
+				}
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
+	@Test
+	public void TestAssertionTypeException2(){
+		String methodTest = "public class A { "
+				+  " public void setName(String name)" 
+				+  "	{"
+				+  " 		this.name = name;"
+				+  "	}"
+				+ "}";
+		TestStereotypeAnalyzer analyzer = new TestStereotypeAnalyzer();
+		try {
+			analyzer.analyzeString(methodTest);
+			for (Map.Entry<String, TestUnderAnalysis>  entry : analyzer.mapSignToTest.entrySet()) {
+				TestUnderAnalysis test = entry.getValue();
+				HashSet<TestStereotype> rules = test.matchedRules;
+				for(TestStereotype rule : rules){
+					assertEquals(TestStereotype.Cleaner, rule);
+				}
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
 
 }

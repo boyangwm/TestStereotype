@@ -1,5 +1,8 @@
 package edu.wm.constants;
 
+import java.util.HashSet;
+
+import org.eclipse.jdt.core.dom.Annotation;
 import org.eclipse.jdt.core.dom.MarkerAnnotation;
 
 public enum TestAnnotation {
@@ -15,27 +18,29 @@ public enum TestAnnotation {
 
 	private final String name;       
 
-	
+
 	private TestAnnotation(String s) {
 		name = s;
 	}
 
-	
+
 	/**
 	 * Return true if TestAnnotation contains the given name
 	 * @param name
 	 * @return
 	 */
-	public static boolean contains(MarkerAnnotation annotation){
+	public static boolean contains(HashSet<Annotation> annotations){
 		for (TestAnnotation value : TestAnnotation.values()) {
-			if(annotation.getTypeName().getFullyQualifiedName().toLowerCase().equals(value.name)){
-				return true;
+			for(Annotation annotation : annotations){
+				if(annotation.getTypeName().getFullyQualifiedName().toLowerCase().equals(value.name)){
+					return true;
+				}
 			}
 		}
 		return false;
 	}
 
-	
+
 	/**
 	 * 
 	 * @param otherName
@@ -45,7 +50,7 @@ public enum TestAnnotation {
 		return (otherName == null) ? false : name.equals(otherName.toLowerCase());
 	}
 
-	
+
 	public String toString() {
 		return this.name;
 	}

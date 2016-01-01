@@ -3,8 +3,9 @@ package edu.wm.constants;
 public enum TestStereotype {
 	
 	//category 1
-	Setter("EvironmentSetter", "This type test case sets the evironment of the test case."),
-	Cleaner("EvironmentCleaner", "This type test case cleans the evironment of the test case."),
+	Setter("TestSetter", "This type test case sets the evironment of the test case."),
+	Cleaner("TestCleaner", "This type test case cleans the evironment of the test case."),
+	Exception("ExceptionVerifier", "This type test case verifies whether the test case throws expected exception."),
 	Condition("ConditionVerifier", "This type of test case verifies boolean conditions."),
 	Equality("EqualityVerifier", "This type of test case verifies whether the two arguments’ values are equal."),
 	Identity("IdentityVerifier", "This type of test case verifies whether two arguments reference the same object."),

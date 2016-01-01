@@ -5,6 +5,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.eclipse.jdt.core.dom.Annotation;
 import org.eclipse.jdt.core.dom.MarkerAnnotation;
 import org.eclipse.jdt.core.dom.MethodDeclaration;
 import org.eclipse.jdt.core.dom.MethodInvocation;
@@ -22,7 +23,7 @@ public class TestUnderAnalysis {
 	/**
 	 * Record the annotation of the test case
 	 */
-	private MarkerAnnotation annotation;
+	private HashSet<Annotation> annotations;
 
 
 	/**
@@ -62,24 +63,24 @@ public class TestUnderAnalysis {
 	}
 
 
-	public TestUnderAnalysis(MethodDeclaration method, MarkerAnnotation annotation){
+	public TestUnderAnalysis(MethodDeclaration method, HashSet<Annotation> annotations){
 		this.method = method;
-		this.annotation = annotation;
+		this.annotations = annotations;
 	}
 
 
 	/**
 	 * @return the annotation
 	 */
-	public MarkerAnnotation getAnnotation() {
-		return annotation;
+	public HashSet<Annotation> getAnnotation() {
+		return annotations;
 	}
 
 	/**
 	 * @param annotation the annotation to set
 	 */
-	public void setAnnotation(MarkerAnnotation annotation) {
-		this.annotation = annotation;
+	public void setAnnotation(HashSet<Annotation> annotations) {
+		this.annotations = annotations;
 	}
 
 

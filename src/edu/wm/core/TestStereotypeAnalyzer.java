@@ -6,15 +6,18 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Hashtable;
 import java.util.Map;
 import java.util.logging.Level;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.filefilter.TrueFileFilter;
+import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.jdt.core.dom.AST;
 import org.eclipse.jdt.core.dom.ASTNode;
 import org.eclipse.jdt.core.dom.ASTParser;
 import org.eclipse.jdt.core.dom.ASTVisitor;
+import org.eclipse.jdt.core.dom.Annotation;
 import org.eclipse.jdt.core.dom.CompilationUnit;
 import org.eclipse.jdt.core.dom.EnumDeclaration;
 import org.eclipse.jdt.core.dom.ITypeBinding;
@@ -72,7 +75,7 @@ public class TestStereotypeAnalyzer {
 	}
 
 
-	
+
 	/**
 	 * Analyze the given string (source code)
 	 * @param FileString
@@ -135,9 +138,9 @@ public class TestStereotypeAnalyzer {
 					String sign = UtilAST.getMethodSignature(method);
 					mapSignToMethod.put(sign, method);
 					//If it's a test case, put the method into the map.
-					MarkerAnnotation annotation = ReturnAnnotation(method);
-					if(TestAnnotation.contains(annotation)){
-						TestUnderAnalysis testMethod = new TestUnderAnalysis(method, annotation);
+					HashSet<Annotation> annotations = ReturnAnnotation(method);
+					if(TestAnnotation.contains(annotations)){
+						TestUnderAnalysis testMethod = new TestUnderAnalysis(method, annotations);
 						mapSignToTest.put(sign, testMethod);
 					}
 				}
@@ -146,13 +149,30 @@ public class TestStereotypeAnalyzer {
 	}
 
 	private void loadStringInfo(String fileString) throws ProjectNotExistException, IOException{
+
+		String[] sources = { "" };
+		ASTParser parser = ASTParser.newParser(AST.JLS4);
+		parser.setSource(fileString.toCharArray());
+		parser.setKind(ASTParser.K_COMPILATION_UNIT);
+		parser.setResolveBindings(true);
+		parser.setBindingsRecovery(true);
+		parser.setEnvironment(null, sources, new String[] { "UTF-8" }, true);
+
+		Hashtable<String, String> options = JavaCore.getDefaultOptions();
+		options.put(JavaCore.COMPILER_SOURCE, JavaCore.VERSION_1_6);
+		options.put(JavaCore.COMPILER_DOC_COMMENT_SUPPORT, JavaCore.ENABLED);
+
+		parser.setCompilerOptions(options);
+		parser.setUnitName("String");
+
+		/*
 		ASTParser parser = ASTParser.newParser(AST.JLS3);
 		parser.setSource((fileString).toCharArray());
 		parser.setKind(ASTParser.K_COMPILATION_UNIT);
-		
-		
+		 */
+
 		TestStereotypeAnalyzer analyzer = new TestStereotypeAnalyzer();
- 
+
 		final CompilationUnit cu = (CompilationUnit) parser.createAST(null);
 		MethodDeclarationVisitor methodVisitor = new MethodDeclarationVisitor();
 		cu.accept(methodVisitor);
@@ -160,9 +180,9 @@ public class TestStereotypeAnalyzer {
 			String sign = UtilAST.getMethodSignature(method);
 			mapSignToMethod.put(sign, method);
 			//If it's a test case, put the method into the map.
-			MarkerAnnotation annotation = ReturnAnnotation(method);
-			if(TestAnnotation.contains(annotation)){
-				TestUnderAnalysis testMethod = new TestUnderAnalysis(method, annotation);
+			HashSet<Annotation> annotations = ReturnAnnotation(method);
+			if(TestAnnotation.contains(annotations)){
+				TestUnderAnalysis testMethod = new TestUnderAnalysis(method, annotations);
 				mapSignToTest.put(sign, testMethod);
 			}
 		}
@@ -173,14 +193,11 @@ public class TestStereotypeAnalyzer {
 	 * @param method
 	 * @return
 	 */
-	public MarkerAnnotation ReturnAnnotation(MethodDeclaration method){
+	public HashSet<Annotation> ReturnAnnotation(MethodDeclaration method){
 		MarkerAnnotationVisitor visitorAnnotation = new MarkerAnnotationVisitor();
 		method.accept(visitorAnnotation);
-		if(visitorAnnotation.getAnnotation() != null){
-			return visitorAnnotation.getAnnotation();
-			//return visitorAnnotation.getAnnotation().getTypeName().getFullyQualifiedName();
-		}
-		return null;
+		return visitorAnnotation.getAnnotation();
+		//return visitorAnnotation.getAnnotation().getTypeName().getFullyQualifiedName();
 	}
 
 

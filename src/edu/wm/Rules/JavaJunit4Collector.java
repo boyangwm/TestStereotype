@@ -15,8 +15,9 @@ public class JavaJunit4Collector extends RuleCollector {
 	@Override
 	protected void DefineRuleSet() {
 		ArrayList<StereotypeRule> ruleList = new ArrayList<StereotypeRule>();
-		ruleList.add(new EvironmentCleaner());
-		ruleList.add(new EvironmentSetter());
+		ruleList.add(new RuleTestCleaner());
+		ruleList.add(new RuleTestSetter());
+		ruleList.add(new RuleExceptionVerifier());
 		ruleList.add(new RuleConditionVerifier());
 		ruleList.add(new RuleEqualityVerifier());
 		ruleList.add(new RuleIdentityVerifier());
