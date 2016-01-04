@@ -1,10 +1,6 @@
 package edu.wm.Rules;
 
-import java.util.ArrayList;
 
-import org.eclipse.jdt.core.dom.MethodInvocation;
-
-import edu.wm.constants.Assertions;
 import edu.wm.constants.TestStereotype;
 import edu.wm.core.TestUnderAnalysis;
 

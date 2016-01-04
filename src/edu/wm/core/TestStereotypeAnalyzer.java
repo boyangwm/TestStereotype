@@ -25,6 +25,7 @@ import org.eclipse.jdt.core.dom.MarkerAnnotation;
 import org.eclipse.jdt.core.dom.MethodDeclaration;
 import org.eclipse.jdt.core.dom.TypeDeclaration;
 
+import edu.wm.Rules.FlowCollector;
 import edu.wm.Rules.JavaJunit4Collector;
 import edu.wm.Rules.RuleCollector;
 import edu.wm.ast.AssertionInvocationVisitor;
@@ -220,9 +221,15 @@ public class TestStereotypeAnalyzer {
 	 * Analyzes the given test cases
 	 */
 	private void AnalyzeTest(TestUnderAnalysis test){
+		
+		//detects all the assertions in the test
 		AssertionInvocationVisitor assertionVisitor = new AssertionInvocationVisitor();
 		test.getMethod().accept(assertionVisitor);
 		test.setAssertionStmts(assertionVisitor.getAssertions());
+		
+		
+		
+		
 	}
 
 
@@ -230,18 +237,24 @@ public class TestStereotypeAnalyzer {
 	 * Match the rule by using given rule collector
 	 */
 	private void RuleMatching(){
+		//Category 1 rules matching
 		RuleCollector ruleCollectorJunit4 = new JavaJunit4Collector();
+		
+		//Category 2 rules matching
+		RuleCollector flowCollector = new FlowCollector();
+		
+		
 		for (Map.Entry<String, TestUnderAnalysis>  entry : mapSignToTest.entrySet()) {
 			String key = entry.getKey();
 			TestUnderAnalysis test = entry.getValue();
 			test.applyRuleCollector(ruleCollectorJunit4);
+			test.applyRuleCollector(flowCollector);
 		}
 	}
 
 
 
-	private void printTestType(){
-		RuleCollector ruleCollectorJunit4 = new JavaJunit4Collector();
+	public void printTestType(){
 		for (Map.Entry<String, TestUnderAnalysis>  entry : mapSignToTest.entrySet()) {
 			System.out.println("\nMethod : " + entry.getKey());
 			TestUnderAnalysis test = entry.getValue();

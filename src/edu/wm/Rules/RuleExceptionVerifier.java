@@ -7,19 +7,22 @@ import org.eclipse.jdt.core.dom.Annotation;
 import org.eclipse.jdt.core.dom.Expression;
 import org.eclipse.jdt.core.dom.MemberValuePair;
 import org.eclipse.jdt.core.dom.NormalAnnotation;
-import org.eclipse.jdt.core.dom.TypeLiteral;
 
 import edu.wm.constants.TestStereotype;
 import edu.wm.core.TestUnderAnalysis;
 
+/**
+ * Rule for test cases checking Exceptions 
+ * @author Boyang
+ *
+ */
 public class RuleExceptionVerifier extends StereotypeRule{
 	/**
 	 * Creates a new RuleExceptionVerifier using default values for data sets.
 	 */
 	public RuleExceptionVerifier()  {super(); }
 
-
-
+	
 	/**
 	 * Classifies the given method. Returns true if the node meets the conditions for this rule, false otherwise.
 	 */

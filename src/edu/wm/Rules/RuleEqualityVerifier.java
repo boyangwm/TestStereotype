@@ -8,6 +8,14 @@ import edu.wm.constants.Assertions;
 import edu.wm.constants.TestStereotype;
 import edu.wm.core.TestUnderAnalysis;
 
+
+
+
+/**
+ * Rule for equality assertions
+ * @author Boyang
+ *
+ */
 public class RuleEqualityVerifier extends StereotypeRule {
 
 	/**
@@ -32,6 +40,8 @@ public class RuleEqualityVerifier extends StereotypeRule {
 			}else if(assertionName.equals(Assertions.assertArrayEquals.name())){
 				numOfMatches++;
 			}else if(assertionName.equals(Assertions.assertThat.name())){
+				numOfMatches++;
+			}else if(assertionName.equals(Assertions.assertNotEquals.name())){
 				numOfMatches++;
 			}
 		}

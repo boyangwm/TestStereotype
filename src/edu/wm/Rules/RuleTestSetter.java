@@ -4,11 +4,15 @@ package edu.wm.Rules;
 import java.util.HashSet;
 
 import org.eclipse.jdt.core.dom.Annotation;
-import org.eclipse.jdt.core.dom.MarkerAnnotation;
 
 import edu.wm.constants.TestStereotype;
 import edu.wm.core.TestUnderAnalysis;
 
+/**
+ * Rule for test cases setting up
+ * @author Boyang
+ *
+ */
 public class RuleTestSetter  extends StereotypeRule {
 
 	/**

@@ -8,9 +8,15 @@ import edu.wm.constants.Assertions;
 import edu.wm.constants.TestStereotype;
 import edu.wm.core.TestUnderAnalysis;
 
+
+
+
+/**
+ * Rule for condition assertions
+ * @author Boyang
+ *
+ */
 public class RuleConditionVerifier extends StereotypeRule {
-
-
 	/**
 	 * Creates a new RuleConditionVerifier using default values for data sets.
 	 */

@@ -23,7 +23,7 @@ public class Run {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
+		analyzer.printTestType();
 		System.out.println("Done. Thanks.");
 		
 	}

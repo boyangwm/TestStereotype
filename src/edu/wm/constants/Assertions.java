@@ -11,7 +11,9 @@ public enum Assertions {
 	assertNotNull("assertnotnull"),
 	assertNull("assertnull"),
 	assertSame("assertsame"),
-	assertThat("assertthat");
+	assertThat("assertthat"),
+	assertNotEquals("assertnotequals"),
+	assertNotSame("assertnotsame");
 	//@Test(timeout=500)
 	//@Test(expected=IllegalArgumentException.class)
 

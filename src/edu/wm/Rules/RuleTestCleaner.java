@@ -3,11 +3,17 @@ package edu.wm.Rules;
 import java.util.HashSet;
 
 import org.eclipse.jdt.core.dom.Annotation;
-import org.eclipse.jdt.core.dom.MarkerAnnotation;
 
 import edu.wm.constants.TestStereotype;
 import edu.wm.core.TestUnderAnalysis;
 
+
+
+/**
+ * Rule for test cases clean up (post procedure of test cases)
+ * @author Boyang
+ *
+ */
 public class RuleTestCleaner extends StereotypeRule {
 	/**
 	 * Creates a new RuleTestCleaner using default values for data sets.

@@ -34,6 +34,19 @@ public class TestHelloWorld {
 
 	@Test(expected=IllegalArgumentException.class)
 	public void testException(String input) {
-		 System.out.println("@Test(expected) will check for specified exception during its run");
+		System.out.println("@Test(expected) will check for specified exception during its run");
 	}
+
+
+	@Test
+	public void testHelloEmpty() 
+	{
+		int a = 1;
+		if(a == 1)
+			assertEquals(h.getMessage(),"Hello!");
+		}else{
+			a = 2;
+		}
+	}
+
 }

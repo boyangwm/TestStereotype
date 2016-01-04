@@ -8,6 +8,13 @@ import edu.wm.constants.Assertions;
 import edu.wm.constants.TestStereotype;
 import edu.wm.core.TestUnderAnalysis;
 
+
+
+/**
+ * Rule for utility checking
+ * @author Boyang
+ *
+ */
 public class RuleUtilityVerifier extends StereotypeRule {
 	/**
 	 * Creates a new RuleConditionVerifier using default values for data sets.

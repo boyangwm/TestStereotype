@@ -5,6 +5,13 @@ import org.eclipse.jdt.core.dom.MethodInvocation;
 import edu.wm.constants.TestStereotype;
 import edu.wm.core.TestUnderAnalysis;
 
+
+
+/**
+ * Abstract class for stereotype rules
+ * @author Boyang
+ *
+ */
 public abstract class StereotypeRule {
 
     /**

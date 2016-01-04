@@ -2,6 +2,11 @@ package edu.wm.Rules;
 
 import java.util.ArrayList;
 
+/**
+ * This collector contains all rules (category 1) for Junit4 test cases. 
+ * @author Boyang
+ *
+ */
 public class JavaJunit4Collector extends RuleCollector {
 
 	public JavaJunit4Collector()	{

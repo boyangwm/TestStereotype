@@ -8,6 +8,14 @@ import edu.wm.constants.Assertions;
 import edu.wm.constants.TestStereotype;
 import edu.wm.core.TestUnderAnalysis;
 
+
+
+
+/**
+ * Rule for identity verifier
+ * @author Boyang
+ *
+ */
 public class RuleIdentityVerifier extends StereotypeRule{
 
 	/**
@@ -26,7 +34,7 @@ public class RuleIdentityVerifier extends StereotypeRule{
 		int numOfMatches = 0;
 		for(MethodInvocation assertion : assertions){
 			String assertionName = getAssertionName(assertion);
-			if(assertionName.equals(Assertions.assertSame.name())){
+			if(assertionName.equals(Assertions.assertSame.name()) || assertionName.equals(Assertions.assertNotSame.name())){
 				numOfMatches++;
 			}
 		}

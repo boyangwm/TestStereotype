@@ -99,9 +99,7 @@ public class TestTestUnderAnalysis {
 			for (Map.Entry<String, TestUnderAnalysis>  entry : analyzer.mapSignToTest.entrySet()) {
 				TestUnderAnalysis test = entry.getValue();
 				HashSet<TestStereotype> rules = test.matchedRules;
-				for(TestStereotype rule : rules){
-					assertEquals(TestStereotype.Condition, rule);
-				}
+				assertTrue(ContainsType(rules, TestStereotype.Condition));
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -126,9 +124,7 @@ public class TestTestUnderAnalysis {
 			for (Map.Entry<String, TestUnderAnalysis>  entry : analyzer.mapSignToTest.entrySet()) {
 				TestUnderAnalysis test = entry.getValue();
 				HashSet<TestStereotype> rules = test.matchedRules;
-				for(TestStereotype rule : rules){
-					assertEquals(TestStereotype.Equality, rule);
-				}
+				assertTrue(ContainsType(rules, TestStereotype.Equality));
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -151,9 +147,7 @@ public class TestTestUnderAnalysis {
 			for (Map.Entry<String, TestUnderAnalysis>  entry : analyzer.mapSignToTest.entrySet()) {
 				TestUnderAnalysis test = entry.getValue();
 				HashSet<TestStereotype> rules = test.matchedRules;
-				for(TestStereotype rule : rules){
-					assertEquals(TestStereotype.Identity, rule);
-				}
+				assertTrue(ContainsType(rules, TestStereotype.Identity));
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -181,9 +175,7 @@ public class TestTestUnderAnalysis {
 			for (Map.Entry<String, TestUnderAnalysis>  entry : analyzer.mapSignToTest.entrySet()) {
 				TestUnderAnalysis test = entry.getValue();
 				HashSet<TestStereotype> rules = test.matchedRules;
-				for(TestStereotype rule : rules){
-					assertEquals(TestStereotype.Utility, rule);
-				}
+				assertTrue(ContainsType(rules, TestStereotype.Utility));
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -208,9 +200,7 @@ public class TestTestUnderAnalysis {
 			for (Map.Entry<String, TestUnderAnalysis>  entry : analyzer.mapSignToTest.entrySet()) {
 				TestUnderAnalysis test = entry.getValue();
 				HashSet<TestStereotype> rules = test.matchedRules;
-				for(TestStereotype rule : rules){
-					assertEquals(TestStereotype.Hybrid, rule);
-				}
+				assertTrue(ContainsType(rules, TestStereotype.Hybrid));
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -234,9 +224,8 @@ public class TestTestUnderAnalysis {
 			for (Map.Entry<String, TestUnderAnalysis>  entry : analyzer.mapSignToTest.entrySet()) {
 				TestUnderAnalysis test = entry.getValue();
 				HashSet<TestStereotype> rules = test.matchedRules;
-				for(TestStereotype rule : rules){
-					assertEquals(TestStereotype.Setter, rule);
-				}
+				assertTrue(ContainsType(rules, TestStereotype.Setter));
+
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -261,9 +250,7 @@ public class TestTestUnderAnalysis {
 			for (Map.Entry<String, TestUnderAnalysis>  entry : analyzer.mapSignToTest.entrySet()) {
 				TestUnderAnalysis test = entry.getValue();
 				HashSet<TestStereotype> rules = test.matchedRules;
-				for(TestStereotype rule : rules){
-					assertEquals(TestStereotype.Cleaner, rule);
-				}
+				assertTrue(ContainsType(rules, TestStereotype.Cleaner));
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -286,9 +273,7 @@ public class TestTestUnderAnalysis {
 			for (Map.Entry<String, TestUnderAnalysis>  entry : analyzer.mapSignToTest.entrySet()) {
 				TestUnderAnalysis test = entry.getValue();
 				HashSet<TestStereotype> rules = test.matchedRules;
-				for(TestStereotype rule : rules){
-					assertEquals(TestStereotype.Exception, rule);
-				}
+				assertTrue(ContainsType(rules, TestStereotype.Exception));
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -296,12 +281,13 @@ public class TestTestUnderAnalysis {
 	}
 
 	@Test
-	public void TestAssertionTypeException2(){
+	public void TestAssertionTypeForLoop(){
 		String methodTest = "public class A { "
-				+  " public void setName(String name)" 
-				+  "	{"
-				+  " 		this.name = name;"
-				+  "	}"
+				+ "@Test"
+				+" public void testHelloEmpty(){" 
+				+	"for(int i = 0; i < 10; i++){"
+				+		"assertEquals(h.getMessage(),\"Hello!\");"
+				+	"}"
 				+ "}";
 		TestStereotypeAnalyzer analyzer = new TestStereotypeAnalyzer();
 		try {
@@ -309,13 +295,65 @@ public class TestTestUnderAnalysis {
 			for (Map.Entry<String, TestUnderAnalysis>  entry : analyzer.mapSignToTest.entrySet()) {
 				TestUnderAnalysis test = entry.getValue();
 				HashSet<TestStereotype> rules = test.matchedRules;
-				for(TestStereotype rule : rules){
-					assertEquals(TestStereotype.Cleaner, rule);
-				}
+
+				assertTrue(ContainsType(rules, TestStereotype.Equality));
+				assertTrue(ContainsType(rules, TestStereotype.Iterative));
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+	}
+
+
+
+
+	@Test
+	public void TestAssertionTypeForBranch(){
+		String methodTest = "public class A { "
+				+ "@Test"
+				+ " public void testHelloEmpty()" 
+				+ "{"
+				+	"int a = 1;"
+				+	"if(a == 1){"
+				+		"assertEquals(h.getMessage(),\"Hello!\");"
+				+	"}else{"
+				+	"	a = 2;"
+				+	"}"
+				+ "}"
+				+"};";
+		TestStereotypeAnalyzer analyzer = new TestStereotypeAnalyzer();
+		try {
+			analyzer.analyzeString(methodTest);
+			for (Map.Entry<String, TestUnderAnalysis>  entry : analyzer.mapSignToTest.entrySet()) {
+				TestUnderAnalysis test = entry.getValue();
+				HashSet<TestStereotype> rules = test.matchedRules;
+
+				assertTrue(ContainsType(rules, TestStereotype.Branch));
+				assertTrue(ContainsType(rules, TestStereotype.Equality));
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
+
+
+
+
+	/**
+	 * Check if rules contains type type
+	 * @param rules
+	 * @param type
+	 * @return
+	 */
+	private boolean ContainsType(HashSet<TestStereotype> rules, TestStereotype type){
+		for(TestStereotype rule : rules){
+			if(rule == type){
+				return true;
+			}
+		}
+		return false;
+
 	}
 
 }
