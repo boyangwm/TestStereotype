@@ -24,6 +24,7 @@ public class FlowCollector extends RuleCollector {
 		ruleList.add(new RuleBranchVerifier());
 		
 		this.rules = ruleList;
+		
 	}
 
 }

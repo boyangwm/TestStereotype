@@ -10,8 +10,10 @@ import org.eclipse.jdt.core.dom.ASTParser;
 import org.eclipse.jdt.core.dom.CompilationUnit;
 import org.eclipse.jdt.core.dom.EnumDeclaration;
 import org.eclipse.jdt.core.dom.ITypeBinding;
+import org.eclipse.jdt.core.dom.IVariableBinding;
 import org.eclipse.jdt.core.dom.MethodDeclaration;
 import org.eclipse.jdt.core.dom.PackageDeclaration;
+import org.eclipse.jdt.core.dom.SimpleName;
 import org.eclipse.jdt.core.dom.SingleVariableDeclaration;
 import org.eclipse.jdt.core.dom.TypeDeclaration;
 
@@ -94,6 +96,22 @@ public class UtilAST {
 		}
 		sb.append(")");
 		return sb.toString();
+	}
+	
+	
+	
+	/**
+	 * Get IVariableBinding of a simpleName
+	 * @param node
+	 * @return
+	 */
+	public static IVariableBinding getBinding(final SimpleName node){
+		IVariableBinding variableBinding = null;  
+		if (node.resolveBinding() instanceof IVariableBinding) {
+			return (IVariableBinding)node.resolveBinding();
+		}else{
+			return null;
+		}
 	}
 
 }

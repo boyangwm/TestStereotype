@@ -2,6 +2,7 @@ package UnitTests;
 
 import static org.junit.Assert.*;
 
+import java.io.File;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -37,8 +38,8 @@ public class ConfigTests {
 		}
 
 
-		assertEquals(currentRelativePath.toAbsolutePath().toString() + "\\" + "Apps\\Durbodax", analyzer.projectLoc);
-		assertNotEquals(currentRelativePath.toAbsolutePath().toString() + "\\" + "Apps\\HelloWorldJunit", analyzer.projectLoc);
+		assertEquals(currentRelativePath.toAbsolutePath().toString() + File.separator + "Apps" + File.separator +"Durbodax", analyzer.projectLoc);
+		assertNotEquals(currentRelativePath.toAbsolutePath().toString() + File.separator + "Apps" + File.separator + "HelloWorldJunit", analyzer.projectLoc);
 	}
 
 
@@ -49,7 +50,7 @@ public class ConfigTests {
 		Path currentRelativePath = Paths.get("");
 
 		//HelloWorldJunit
-		String projectLoc = currentRelativePath.toAbsolutePath().toString() + "\\" + "Apps\\HelloWorldJunit"; 
+		String projectLoc = currentRelativePath.toAbsolutePath().toString() + File.separator + "Apps" + File.separator +"HelloWorldJunit"; 
 		TestStereotypeAnalyzer analyzer = new TestStereotypeAnalyzer();
 
 		Class[] cArg = new Class[1];
@@ -64,8 +65,11 @@ public class ConfigTests {
 		} catch (Exception e1) {
 			e1.printStackTrace();
 		}
-		assertEquals(3, analyzer.mapSignToTest.size());
+		assertEquals(4, analyzer.mapSignToTest.size());
 	}
 
+	
+	
+	
 
 }

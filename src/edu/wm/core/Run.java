@@ -24,6 +24,7 @@ public class Run {
 			e.printStackTrace();
 		}
 		analyzer.printTestType();
+		analyzer.printSummary();
 		System.out.println("Done. Thanks.");
 		
 	}

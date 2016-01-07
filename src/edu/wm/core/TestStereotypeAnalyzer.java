@@ -43,7 +43,6 @@ public class TestStereotypeAnalyzer {
 	//The project location
 	public String projectLoc = "";
 
-
 	//All java files in the project 
 	//public HashSet<String> javaFiles = new HashSet<String>();
 
@@ -188,13 +187,42 @@ public class TestStereotypeAnalyzer {
 			}
 		}
 	}
+	
+	
+	
+	public static CompilationUnit StringToCU(String fileString){
+		String[] sources = { "" };
+		ASTParser parser = ASTParser.newParser(AST.JLS4);
+		parser.setSource(fileString.toCharArray());
+		parser.setKind(ASTParser.K_COMPILATION_UNIT);
+		parser.setResolveBindings(true);
+		parser.setBindingsRecovery(true);
+		parser.setEnvironment(null, sources, new String[] { "UTF-8" }, true);
+
+		Hashtable<String, String> options = JavaCore.getDefaultOptions();
+		options.put(JavaCore.COMPILER_SOURCE, JavaCore.VERSION_1_6);
+		options.put(JavaCore.COMPILER_DOC_COMMENT_SUPPORT, JavaCore.ENABLED);
+
+		parser.setCompilerOptions(options);
+		parser.setUnitName("String");
+
+		/*
+		ASTParser parser = ASTParser.newParser(AST.JLS3);
+		parser.setSource((fileString).toCharArray());
+		parser.setKind(ASTParser.K_COMPILATION_UNIT);
+		 */
+
+		TestStereotypeAnalyzer analyzer = new TestStereotypeAnalyzer();
+
+		return (CompilationUnit) parser.createAST(null);
+	}
 
 	/**
 	 * Returns the annotation of the given method
 	 * @param method
 	 * @return
 	 */
-	public HashSet<Annotation> ReturnAnnotation(MethodDeclaration method){
+	public static HashSet<Annotation> ReturnAnnotation(MethodDeclaration method){
 		MarkerAnnotationVisitor visitorAnnotation = new MarkerAnnotationVisitor();
 		method.accept(visitorAnnotation);
 		return visitorAnnotation.getAnnotation();
@@ -221,15 +249,11 @@ public class TestStereotypeAnalyzer {
 	 * Analyzes the given test cases
 	 */
 	private void AnalyzeTest(TestUnderAnalysis test){
-		
+
 		//detects all the assertions in the test
 		AssertionInvocationVisitor assertionVisitor = new AssertionInvocationVisitor();
 		test.getMethod().accept(assertionVisitor);
 		test.setAssertionStmts(assertionVisitor.getAssertions());
-		
-		
-		
-		
 	}
 
 
@@ -239,11 +263,11 @@ public class TestStereotypeAnalyzer {
 	private void RuleMatching(){
 		//Category 1 rules matching
 		RuleCollector ruleCollectorJunit4 = new JavaJunit4Collector();
-		
+
 		//Category 2 rules matching
 		RuleCollector flowCollector = new FlowCollector();
-		
-		
+
+
 		for (Map.Entry<String, TestUnderAnalysis>  entry : mapSignToTest.entrySet()) {
 			String key = entry.getKey();
 			TestUnderAnalysis test = entry.getValue();
@@ -254,6 +278,9 @@ public class TestStereotypeAnalyzer {
 
 
 
+	/**
+	 * Prints all detected tests' signature and its types 
+	 */
 	public void printTestType(){
 		for (Map.Entry<String, TestUnderAnalysis>  entry : mapSignToTest.entrySet()) {
 			System.out.println("\nMethod : " + entry.getKey());
@@ -265,6 +292,31 @@ public class TestStereotypeAnalyzer {
 			}
 
 		}
+	}
+
+
+
+	public void printSummary(){
+		HashMap <TestStereotype, Integer> typeToOccurrence = new HashMap<TestStereotype, Integer>();
+		for(TestStereotype type: TestStereotype.values()){
+			typeToOccurrence.put(type, 0);
+		}
+		
+		System.out.println("# of Detected test cases : " + mapSignToTest.size() );
+		
+		for (Map.Entry<String, TestUnderAnalysis>  entry : mapSignToTest.entrySet()) {
+			TestUnderAnalysis test = entry.getValue();
+			HashSet<TestStereotype> rules = test.matchedRules;
+			for(TestStereotype rule : rules){
+				int currentOccur = typeToOccurrence.get(rule);
+				typeToOccurrence.put(rule, currentOccur + 1);
+			}
+		}
+		
+		for(Map.Entry<TestStereotype, Integer>  entry : typeToOccurrence.entrySet()){
+			System.out.println(entry.getKey().toString()  +  " occurs " + entry.getValue() + " times."); 
+		}
+		
 	}
 
 
