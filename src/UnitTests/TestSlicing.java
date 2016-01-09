@@ -214,8 +214,143 @@ public class TestSlicing {
 
 
 
+	@Test
+	public void TestAssignment5(){
+		String fileString = "public class A { "
+				+ "		int f = 3;"
+				+ "		@Test "				
+				+ "		public int testHelloWorld(int b) { "
+				+ " 		int a = b; "
+				+ "			int e, d; "
+				+ "			return e = b;"
+				+ "			assertEquals(c,a);"
+				+ "		}  "
+				+ "}";
 
 
+		Path currentRelativePath = Paths.get("");
+
+		final CompilationUnit cu = UtilAST.getASTAndBindings(fileString, currentRelativePath.toAbsolutePath().toString()+File.separator+"Apps"+File.separator+"Testing", "A");
+		MethodDeclarationVisitor methodVisitor = new MethodDeclarationVisitor();
+		cu.accept(methodVisitor);
+		for (MethodDeclaration method : methodVisitor.getMethods()) {
+
+			HashSet<Annotation> annotations = TestStereotypeAnalyzer.ReturnAnnotation(method);
+			if(TestAnnotation.contains(annotations)){
+				TestUnderAnalysis testMethod = new TestUnderAnalysis(method, annotations);
+
+				//detects all the assertions in the test
+				AssertionInvocationVisitor assertionVisitor = new AssertionInvocationVisitor();
+				testMethod.getMethod().accept(assertionVisitor);
+				testMethod.setAssertionStmts(assertionVisitor.getAssertions());
+
+
+				AssignmentMapVisitor assignmentMapVisitor = new AssignmentMapVisitor();
+				testMethod.getMethod().accept(assignmentMapVisitor);
+				HashSet<SimpleName> set = assignmentMapVisitor.varAssignManager.getAssigningVars("a");
+				assertTrue(containsInSets(set, "b"));
+				HashSet<SimpleName> set2 = assignmentMapVisitor.varAssignManager.getAssigningVars("e");
+				assertTrue(containsInSets(set2, "b"));
+			}
+		}
+	}
+
+
+
+	@Test
+	public void TestAssignment6(){
+		String fileString = "public class A {"
+				+ " private class B{"
+				+ " 	public int f = 2;"
+				+ " }"
+				+ " @Test 	"
+				+ " public void testHelloWorld() { "
+				+ " 	int a = 1;"
+				+ " 	B b = new B();    "
+				+ " 	int c;"
+				+ " 	c = a + b.f;"
+				+ " }  "
+				+ " }";
+
+
+		Path currentRelativePath = Paths.get("");
+
+		final CompilationUnit cu = UtilAST.getASTAndBindings(fileString, currentRelativePath.toAbsolutePath().toString()+File.separator+"Apps"+File.separator+"Testing", "A");
+		MethodDeclarationVisitor methodVisitor = new MethodDeclarationVisitor();
+		cu.accept(methodVisitor);
+		for (MethodDeclaration method : methodVisitor.getMethods()) {
+
+			HashSet<Annotation> annotations = TestStereotypeAnalyzer.ReturnAnnotation(method);
+			if(TestAnnotation.contains(annotations)){
+				TestUnderAnalysis testMethod = new TestUnderAnalysis(method, annotations);
+
+				//detects all the assertions in the test
+				AssertionInvocationVisitor assertionVisitor = new AssertionInvocationVisitor();
+				testMethod.getMethod().accept(assertionVisitor);
+				testMethod.setAssertionStmts(assertionVisitor.getAssertions());
+
+
+				AssignmentMapVisitor assignmentMapVisitor = new AssignmentMapVisitor();
+				testMethod.getMethod().accept(assignmentMapVisitor);
+				HashSet<SimpleName> set = assignmentMapVisitor.varAssignManager.getAssigningVars("c");
+				assertTrue(containsInSets(set, "a"));
+				assertTrue(containsInSets(set, "b"));
+			}
+		}
+	}
+
+
+	
+	@Test
+	public void TestAssertions1(){
+		String fileString = "public class A {"
+				+ " private class B{"
+				+ " 	public int f = 2;"
+				+ " }"
+				+ " @Test 	"
+				+ " public void testHelloWorld() { "
+				+ " 	int a = 1;"
+				+ " 	B b = new B();    "
+				+ " 	int c;"
+				+ " 	c = a + b.f;"
+				+ "		assertEquals(c,a);"
+				+ " }  "
+				+ " }";
+
+
+		Path currentRelativePath = Paths.get("");
+
+		final CompilationUnit cu = UtilAST.getASTAndBindings(fileString, currentRelativePath.toAbsolutePath().toString()+File.separator+"Apps"+File.separator+"Testing", "A");
+		MethodDeclarationVisitor methodVisitor = new MethodDeclarationVisitor();
+		cu.accept(methodVisitor);
+		for (MethodDeclaration method : methodVisitor.getMethods()) {
+
+			HashSet<Annotation> annotations = TestStereotypeAnalyzer.ReturnAnnotation(method);
+			if(TestAnnotation.contains(annotations)){
+				TestUnderAnalysis testMethod = new TestUnderAnalysis(method, annotations);
+
+				//detects all the assertions in the test
+				AssertionInvocationVisitor assertionVisitor = new AssertionInvocationVisitor();
+				testMethod.getMethod().accept(assertionVisitor);
+				testMethod.setAssertionStmts(assertionVisitor.getAssertions());
+
+
+				AssignmentMapVisitor assignmentMapVisitor = new AssignmentMapVisitor(testMethod.getAssertionStmts());
+				testMethod.getMethod().accept(assignmentMapVisitor);
+				
+			}
+		}
+	}
+
+
+
+
+	/**
+	 * Checks if set contains variable str by String checking (this is for testing purpose)
+	 * @param set
+	 * @param str
+	 * @return
+	 */
 	public boolean containsInSets( HashSet <SimpleName> set, String str){
 		for(SimpleName name : set){
 			if (name.getIdentifier().equals(str)) {

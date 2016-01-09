@@ -1,27 +1,57 @@
 package edu.wm.ast;
 
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.Stack;
 
 import org.eclipse.jdt.core.dom.ASTVisitor;
 import org.eclipse.jdt.core.dom.Assignment;
 import org.eclipse.jdt.core.dom.ClassInstanceCreation;
 import org.eclipse.jdt.core.dom.IVariableBinding;
+import org.eclipse.jdt.core.dom.MethodInvocation;
 import org.eclipse.jdt.core.dom.SimpleName;
 import org.eclipse.jdt.core.dom.VariableDeclarationFragment;
 
 public class AssignmentMapVisitor extends ASTVisitor {
 	public VariableAssignmentManager varAssignManager = new VariableAssignmentManager();
 
-
-
-	Stack<SimpleName> assignedVars = new Stack<SimpleName>();
+	
+	/**
+	 * Stores all assertions
+	 */
+	private ArrayList<MethodInvocation> assertions;
+	
+	
+	/**
+	 * Uses for assignment slicing
+	 */
+	private Stack<SimpleName> assignedVars = new Stack<SimpleName>();
 
 	int lastLevel = 0;
+	
+	
+	public AssignmentMapVisitor(){
+		this.assertions = new ArrayList<MethodInvocation>();
+	}
+	
+	
+	public AssignmentMapVisitor(ArrayList<MethodInvocation> assertions){
+		this.assertions = assertions;
+	}
+	
+	
 
 	public boolean visit(final SimpleName node) {
+		
+		//ignore useless key words
 		IVariableBinding binding = UtilAST.getBinding(node);
 		if(binding == null){
 			return false;
+		}
+		
+		//ignore field part
+		if(UtilAST.IsField(node)){
+			return true;
 		}
 		if(!assignedVars.empty()){
 			varAssignManager.AddNewRelations(assignedVars.peek(), node, lastLevel == assignedVars.size());
@@ -32,9 +62,8 @@ public class AssignmentMapVisitor extends ASTVisitor {
 
 
 
-
 	public boolean visit(final Assignment node) {
-		SimpleNameVisitor visitor = new SimpleNameVisitor();
+		FirstSimpleNameVisitor visitor = new FirstSimpleNameVisitor();
 		node.getLeftHandSide().accept(visitor);
 		SimpleName leftSimpleName = visitor.getName();
 		assignedVars.add(leftSimpleName);
@@ -77,5 +106,18 @@ public class AssignmentMapVisitor extends ASTVisitor {
 			varAssignManager.AddNewRelations(assignedVars.peek(), popedVar, false);
 		}
 	}
+	
+	
+	
+	public boolean visit(final MethodInvocation node) {
+		if(this.assertions.contains(node)){
+			SimpleVarNameVisitor smVisitor = new SimpleVarNameVisitor();
+			node.accept(smVisitor);
+			HashSet<SimpleName> names = smVisitor.getNames();
+			names.toString();
+		}
+		return true;
+	}
+	
 
 }

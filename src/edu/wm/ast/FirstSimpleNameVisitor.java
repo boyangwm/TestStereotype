@@ -1,10 +1,11 @@
 package edu.wm.ast;
 
 
+
 import org.eclipse.jdt.core.dom.ASTVisitor;
 import org.eclipse.jdt.core.dom.SimpleName;
 
-public class SimpleNameVisitor extends ASTVisitor {
+public class FirstSimpleNameVisitor extends ASTVisitor {
 	SimpleName name = null;
 
 	@Override

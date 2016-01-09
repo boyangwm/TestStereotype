@@ -25,7 +25,7 @@ import org.eclipse.jdt.core.dom.MarkerAnnotation;
 import org.eclipse.jdt.core.dom.MethodDeclaration;
 import org.eclipse.jdt.core.dom.TypeDeclaration;
 
-import edu.wm.Rules.FlowCollector;
+import edu.wm.Rules.FlowDataCollector;
 import edu.wm.Rules.JavaJunit4Collector;
 import edu.wm.Rules.RuleCollector;
 import edu.wm.ast.AssertionInvocationVisitor;
@@ -265,7 +265,7 @@ public class TestStereotypeAnalyzer {
 		RuleCollector ruleCollectorJunit4 = new JavaJunit4Collector();
 
 		//Category 2 rules matching
-		RuleCollector flowCollector = new FlowCollector();
+		RuleCollector flowCollector = new FlowDataCollector();
 
 
 		for (Map.Entry<String, TestUnderAnalysis>  entry : mapSignToTest.entrySet()) {

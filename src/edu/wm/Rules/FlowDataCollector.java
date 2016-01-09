@@ -7,9 +7,9 @@ import java.util.ArrayList;
  * @author Boyang
  *
  */
-public class FlowCollector extends RuleCollector {
+public class FlowDataCollector extends RuleCollector {
 
-	public FlowCollector()	{
+	public FlowDataCollector()	{
 		super();
 	}
 

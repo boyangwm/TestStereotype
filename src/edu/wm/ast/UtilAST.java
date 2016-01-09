@@ -3,16 +3,21 @@ package edu.wm.ast;
 import java.util.Hashtable;
 import java.util.List;
 
+import org.eclipse.jdt.core.ICompilationUnit;
+import org.eclipse.jdt.core.IJavaElement;
 import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.jdt.core.dom.AST;
 import org.eclipse.jdt.core.dom.ASTNode;
 import org.eclipse.jdt.core.dom.ASTParser;
 import org.eclipse.jdt.core.dom.CompilationUnit;
 import org.eclipse.jdt.core.dom.EnumDeclaration;
+import org.eclipse.jdt.core.dom.IMethodBinding;
 import org.eclipse.jdt.core.dom.ITypeBinding;
 import org.eclipse.jdt.core.dom.IVariableBinding;
 import org.eclipse.jdt.core.dom.MethodDeclaration;
+import org.eclipse.jdt.core.dom.MethodInvocation;
 import org.eclipse.jdt.core.dom.PackageDeclaration;
+import org.eclipse.jdt.core.dom.QualifiedName;
 import org.eclipse.jdt.core.dom.SimpleName;
 import org.eclipse.jdt.core.dom.SingleVariableDeclaration;
 import org.eclipse.jdt.core.dom.TypeDeclaration;
@@ -97,9 +102,9 @@ public class UtilAST {
 		sb.append(")");
 		return sb.toString();
 	}
-	
-	
-	
+
+
+
 	/**
 	 * Get IVariableBinding of a simpleName
 	 * @param node
@@ -114,4 +119,87 @@ public class UtilAST {
 		}
 	}
 
+
+
+	public static boolean IsInvockedMethod(final SimpleName node){
+		ASTNode parent = node.getParent();
+		return parent instanceof MethodInvocation;
+	}
+
+
+
+	public static boolean IsInvockedInternalMethod(final SimpleName node){
+		ASTNode parent = node.getParent();
+		if( parent instanceof MethodInvocation){
+			MethodInvocation mInvoke = (MethodInvocation)parent;
+			//IMethodBinding binding = (IMethodBinding) mInvoke.getName().resolveBinding();
+			ITypeBinding binding = (ITypeBinding) mInvoke.getName().resolveTypeBinding();
+			//ICompilationUnit unit = (ICompilationUnit) binding.getJavaElement().getAncestor( IJavaElement.COMPILATION_UNIT );
+			if(binding == null){
+				//external functions
+				return false;
+			}else{
+				//Java predefined functions 
+				if(((ITypeBinding) binding).getQualifiedName().startsWith("java")){
+					return false;
+				}
+				//Internal functions
+				return true;
+			}
+		}else{
+			return false;
+		}
+	}
+
+
+
+	public static boolean IsInvockedExternalMethod(final SimpleName node){
+		ASTNode parent = node.getParent();
+		if( parent instanceof MethodInvocation){
+			MethodInvocation mInvoke = (MethodInvocation)parent;
+			//IMethodBinding binding = (IMethodBinding) mInvoke.getName().resolveBinding();
+			ITypeBinding binding = (ITypeBinding) mInvoke.getName().resolveTypeBinding();
+			//ICompilationUnit unit = (ICompilationUnit) binding.getJavaElement().getAncestor( IJavaElement.COMPILATION_UNIT );
+			if(binding == null){
+				//external functions
+				return true;
+			}else{
+				//Java predefined functions 
+				if(((ITypeBinding) binding).getQualifiedName().startsWith("java")){
+					return true;
+				}
+				//Internal functions
+				return false;
+			}
+		}else{
+			return false;
+		}
+	}
+
+
+	
+	public static boolean IsQualifier(final SimpleName node){
+		ASTNode parent = node.getParent();
+		if(parent instanceof QualifiedName){
+			QualifiedName qualifiedName = (QualifiedName)parent;
+			if(qualifiedName.getQualifier() == node){
+				return true;
+			}
+		}
+		return false;
+	}
+
+	
+	
+	
+	public static boolean IsField(final SimpleName node){
+		ASTNode parent = node.getParent();
+		if(parent instanceof QualifiedName){
+			QualifiedName qualifiedName = (QualifiedName)parent;
+			if(qualifiedName.getName() == node){
+				return true;
+			}
+		}
+		return false;
+	}
 }
