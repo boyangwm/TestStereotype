@@ -22,15 +22,15 @@ public class ASTUtilTest {
 		String fileString = "public class A {"
 				+"	private class B{"
 				+"		public int f = 2;"
-				+"		public void foo(int p){"
-				+"			f = p;"
+				+"		public int foo(int p){"
+				+"			return f = p;"
 				+"		}"
 				+"	}"
 				+"	B b = new B();" 
 				+"	@Test 	"
 				+"	public void testHelloWorld() {" 
 				+"		int a = 1;"
-				+"		b.foo(a);"
+				+"		a = b.foo(a);"
 				+"	}"
 				+"}";
 

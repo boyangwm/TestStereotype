@@ -23,12 +23,14 @@ import org.eclipse.jdt.core.dom.EnumDeclaration;
 import org.eclipse.jdt.core.dom.ITypeBinding;
 import org.eclipse.jdt.core.dom.MarkerAnnotation;
 import org.eclipse.jdt.core.dom.MethodDeclaration;
+import org.eclipse.jdt.core.dom.SimpleName;
 import org.eclipse.jdt.core.dom.TypeDeclaration;
 
 import edu.wm.Rules.FlowDataCollector;
 import edu.wm.Rules.JavaJunit4Collector;
 import edu.wm.Rules.RuleCollector;
 import edu.wm.ast.AssertionInvocationVisitor;
+import edu.wm.ast.AssignmentMapVisitor;
 import edu.wm.ast.MarkerAnnotationVisitor;
 import edu.wm.ast.MethodDeclarationVisitor;
 import edu.wm.ast.UtilAST;
@@ -250,10 +252,17 @@ public class TestStereotypeAnalyzer {
 	 */
 	private void AnalyzeTest(TestUnderAnalysis test){
 
-		//detects all the assertions in the test
+		//1. detects all the assertions in the test
 		AssertionInvocationVisitor assertionVisitor = new AssertionInvocationVisitor();
 		test.getMethod().accept(assertionVisitor);
 		test.setAssertionStmts(assertionVisitor.getAssertions());
+		
+		//2. Slicing analyze
+		AssignmentMapVisitor assignmentMapVisitor = new AssignmentMapVisitor(test.getAssertionStmts());
+		test.getMethod().accept(assignmentMapVisitor);
+		test.analyzeSlicingInfo(assignmentMapVisitor.AsserstionToRelatedSM);
+		
+		
 	}
 
 

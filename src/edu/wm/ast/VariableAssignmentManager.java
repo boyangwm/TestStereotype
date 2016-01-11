@@ -26,18 +26,37 @@ public class VariableAssignmentManager {
 		if(theMap.containsKey(assignedVar)){
 			if(refresh){
 				//add up all variable 
-				theMap.get(assignedVar).addAll(getAssigningVars(assigningVar));
+				theMap.get(assignedVar).addAll(GenerateAssigningByVar(assigningVar));
 			}else{
 				//rewrite everything
-				theMap.put(assignedVar, getAssigningVars(assigningVar));
+				theMap.put(assignedVar, GenerateAssigningByVar(assigningVar));
 			}
 		}else{
-			theMap.put(assignedVar, getAssigningVars(assigningVar));
+			theMap.put(assignedVar, GenerateAssigningByVar(assigningVar));
 		}
+	}
+	
+	
+	
+	/**
+	 * Clear assignment info for the variable of given name
+	 * @param name
+	 */
+	public void ClearByVar(SimpleName name){
+		IVariableBinding assignedVar = UtilAST.getBinding(name);
+		if(theMap.containsKey(assignedVar)){
+			theMap.put(assignedVar, new HashSet<SimpleName>());
+		}
+		
 	}
 
 
-	public HashSet<SimpleName> getAssigningVars(SimpleName name){
+	/**
+	 * Get assigningVars and itself
+	 * @param name
+	 * @return
+	 */
+	private HashSet<SimpleName> GenerateAssigningByVar(SimpleName name){
 		IVariableBinding binding = UtilAST.getBinding(name);
 		HashSet<SimpleName> tempSet = new  HashSet<SimpleName>();
 		tempSet.add(name);
@@ -54,6 +73,19 @@ public class VariableAssignmentManager {
 		for (Entry<IVariableBinding, HashSet<SimpleName>> entry : theMap.entrySet()) {
 			String key = entry.getKey().getName();
 			if(key.equals(name)){
+				return entry.getValue();
+			}
+		}
+		return new HashSet<SimpleName>();
+	}
+	
+	
+	
+	public HashSet<SimpleName> getAssigningVars(SimpleName name){
+		IVariableBinding binding = UtilAST.getBinding(name);
+		for (Entry<IVariableBinding, HashSet<SimpleName>> entry : theMap.entrySet()) {
+			IVariableBinding key = entry.getKey();
+			if(key != null && key.equals(binding)){
 				return entry.getValue();
 			}
 		}

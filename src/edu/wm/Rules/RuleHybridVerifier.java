@@ -32,7 +32,7 @@ public class RuleHybridVerifier extends StereotypeRule{
 	private int NumOfCategoryOne(HashSet<TestStereotype> rules){
 		int ret = 0;
 		for(TestStereotype rule : rules){
-			if(rule.GetCategory() == 1){
+			if(rule.getCategory() == 1){
 				ret++;
 			}
 		}

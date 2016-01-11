@@ -1,20 +1,40 @@
 package edu.wm.core;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map.Entry;
 import java.util.Set;
 
 import org.eclipse.jdt.core.dom.Annotation;
 import org.eclipse.jdt.core.dom.MarkerAnnotation;
 import org.eclipse.jdt.core.dom.MethodDeclaration;
 import org.eclipse.jdt.core.dom.MethodInvocation;
+import org.eclipse.jdt.core.dom.SimpleName;
 
 import edu.wm.Rules.RuleCollector;
+import edu.wm.ast.UtilAST;
 import edu.wm.constants.TestStereotype;
 
 public class TestUnderAnalysis {
 
+	public HashSet<TestStereotype> matchedRules = new HashSet<TestStereotype>(); //ruleCollector.ApplyRules(test);
+	
+
+	/**
+	 * assertion to related assigned variables. 
+	 */
+	public HashMap<MethodInvocation, HashSet<SimpleName>> asserstionToRelatedSM; 
+	
+	
+	private boolean hasQualifier = false;
+
+	private boolean hasInternalCall = false;
+	
+	private boolean hasExternalCall = false;
+	
+	
 	/**
 	 * AST node (MethodDeclaration)
 	 */
@@ -30,13 +50,8 @@ public class TestUnderAnalysis {
 	 * All assertions in the current method
 	 */
 	private ArrayList<MethodInvocation> assertionStmts = new ArrayList<MethodInvocation>();
-
-
-
-
-	public HashSet<TestStereotype> matchedRules = new HashSet<TestStereotype>(); //ruleCollector.ApplyRules(test);
 	
-
+	
 	/**
 	 * Apply collector and infer new types
 	 * @param collector
@@ -68,6 +83,55 @@ public class TestUnderAnalysis {
 		this.annotations = annotations;
 	}
 
+	
+	
+	
+	public void analyzeSlicingInfo(HashMap<MethodInvocation, HashSet<SimpleName>> asserstionToRelatedSM){
+		//record all the information
+		this.asserstionToRelatedSM = asserstionToRelatedSM;
+		hasQualifier = false;
+		hasInternalCall = false;
+		hasExternalCall = false;
+		for(Entry <MethodInvocation, HashSet<SimpleName>> entry : asserstionToRelatedSM.entrySet() ){
+			 HashSet<SimpleName> nameSet = entry.getValue();
+			 hasQualifier = hasQualifier || hasQualifiedVar(nameSet);
+			 hasInternalCall =  hasInternalCall || hasInternalCall(nameSet);
+			 hasExternalCall = hasExternalCall || hasExternalCall(nameSet);
+		}
+	}
+	
+	
+	public boolean hasQualifiedVar(HashSet<SimpleName> nameSet){
+		for(SimpleName name : nameSet){
+			if(UtilAST.IsQualifier(name)){
+				return true;
+			}
+		}
+		return false;
+	}
+	
+	
+	
+	public boolean hasInternalCall(HashSet<SimpleName> nameSet){
+		for(SimpleName name : nameSet){
+			if(UtilAST.IsInvockedInternalMethod(name)){
+				return true;
+			}
+		}
+		return false;
+	}
+	
+	
+	
+	public boolean hasExternalCall(HashSet<SimpleName> nameSet){
+		for(SimpleName name : nameSet){
+			if(UtilAST.IsInvockedExternalMethod(name)){
+				return true;
+			}
+		}
+		return false;
+	}
+	
 
 	/**
 	 * @return the annotation
@@ -98,6 +162,28 @@ public class TestUnderAnalysis {
 		this.method = method;
 	}
 
+	/**
+	 * @return the hasQualifier
+	 */
+	public boolean isHasQualifier() {
+		return hasQualifier;
+	}
+
+
+	/**
+	 * @return the hasInternalCall
+	 */
+	public boolean isHasInternalCall() {
+		return hasInternalCall;
+	}
+
+
+	/**
+	 * @return the hasExternalCall
+	 */
+	public boolean isHasExternalCall() {
+		return hasExternalCall;
+	}
 
 
 

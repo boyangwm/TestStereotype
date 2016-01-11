@@ -1,6 +1,7 @@
 package edu.wm.ast;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Stack;
 
@@ -15,46 +16,56 @@ import org.eclipse.jdt.core.dom.VariableDeclarationFragment;
 public class AssignmentMapVisitor extends ASTVisitor {
 	public VariableAssignmentManager varAssignManager = new VariableAssignmentManager();
 
-	
+
+	public HashMap<MethodInvocation, HashSet<SimpleName>> AsserstionToRelatedSM = new HashMap<MethodInvocation, HashSet<SimpleName>>();
+
+
+
 	/**
 	 * Stores all assertions
 	 */
 	private ArrayList<MethodInvocation> assertions;
-	
-	
+
+
 	/**
 	 * Uses for assignment slicing
 	 */
 	private Stack<SimpleName> assignedVars = new Stack<SimpleName>();
+	
+	
+	private Stack<Boolean> isAssigningVar = new  Stack<Boolean>();
 
 	int lastLevel = 0;
-	
-	
+
+
 	public AssignmentMapVisitor(){
 		this.assertions = new ArrayList<MethodInvocation>();
 	}
-	
-	
+
+
 	public AssignmentMapVisitor(ArrayList<MethodInvocation> assertions){
 		this.assertions = assertions;
 	}
-	
-	
+
+
 
 	public boolean visit(final SimpleName node) {
-		
+
 		//ignore useless key words
 		IVariableBinding binding = UtilAST.getBinding(node);
 		if(binding == null){
 			return false;
 		}
-		
+
 		//ignore field part
 		if(UtilAST.IsField(node)){
 			return true;
 		}
 		if(!assignedVars.empty()){
 			varAssignManager.AddNewRelations(assignedVars.peek(), node, lastLevel == assignedVars.size());
+			isAssigningVar.pop();
+			isAssigningVar.push(true);
+			
 		}
 		lastLevel = assignedVars.size();
 		return true;
@@ -66,7 +77,8 @@ public class AssignmentMapVisitor extends ASTVisitor {
 		FirstSimpleNameVisitor visitor = new FirstSimpleNameVisitor();
 		node.getLeftHandSide().accept(visitor);
 		SimpleName leftSimpleName = visitor.getName();
-		assignedVars.add(leftSimpleName);
+		assignedVars.push(leftSimpleName);
+		isAssigningVar.push(false);
 		node.getRightHandSide().accept((ASTVisitor)this);
 		return false;
 	}
@@ -76,7 +88,14 @@ public class AssignmentMapVisitor extends ASTVisitor {
 		SimpleName popedVar = assignedVars.pop();
 		if(!assignedVars.empty()){
 			varAssignManager.AddNewRelations(assignedVars.peek(), popedVar, false);
+		}else{
+			lastLevel = 0;
 		}
+		boolean isAssigned = isAssigningVar.pop();
+		if(isAssigned == false){
+			varAssignManager.ClearByVar(popedVar);
+		}
+		
 	}
 
 
@@ -88,6 +107,7 @@ public class AssignmentMapVisitor extends ASTVisitor {
 	public boolean visit(final VariableDeclarationFragment node) {
 		SimpleName variable = node.getName();
 		assignedVars.add(variable);
+		isAssigningVar.push(false);
 		if(node.getInitializer() != null){
 			node.getInitializer().accept((ASTVisitor)this);
 		}
@@ -102,22 +122,30 @@ public class AssignmentMapVisitor extends ASTVisitor {
 	 */
 	public void endVisit(final VariableDeclarationFragment node) {
 		SimpleName popedVar = assignedVars.pop();
+		isAssigningVar.pop();
 		if(!assignedVars.empty()){
 			varAssignManager.AddNewRelations(assignedVars.peek(), popedVar, false);
 		}
 	}
-	
-	
-	
+
+
+
+	/* 
+	 * updates AsserstionToRelatedSM when visit MethodInvocation 	 
+	 * */
 	public boolean visit(final MethodInvocation node) {
 		if(this.assertions.contains(node)){
 			SimpleVarNameVisitor smVisitor = new SimpleVarNameVisitor();
 			node.accept(smVisitor);
 			HashSet<SimpleName> names = smVisitor.getNames();
-			names.toString();
+			HashSet<SimpleName> relatedNameSet = new HashSet<SimpleName>();
+			for(SimpleName name : names){
+				relatedNameSet.addAll(varAssignManager.getAssigningVars(name));
+			}
+			AsserstionToRelatedSM.put(node, relatedNameSet);
 		}
 		return true;
 	}
-	
+
 
 }
