@@ -372,6 +372,76 @@ public class TestTestUnderAnalysis {
 		}
 	}
 
+	
+	
+	
+	@Test
+	public void TestAssertionTypeForField(){
+		String fileString = "public class A {"
+				+"	private class B{"
+				+"		public int f = 2;"
+				+"		public int foo(int p){"
+				+"			return f = p;"
+				+"		}"
+				+"	}"
+				+"	B b = new B();" 
+				+"	@Test 	"
+				+"	public void testHelloWorld() {" 
+				+"		int a = 1;"
+				+ "		int c;"
+				+ " 	c = a;"
+				+ "     c = b.f;"
+				+ "		assertEquals(c, b);"
+				+"	}"
+				+"}";
+		TestStereotypeAnalyzer analyzer = new TestStereotypeAnalyzer();
+		try {
+			analyzer.analyzeString(fileString);
+			for (Map.Entry<String, TestUnderAnalysis>  entry : analyzer.mapSignToTest.entrySet()) {
+				TestUnderAnalysis test = entry.getValue();
+				HashSet<TestStereotype> rules = test.matchedRules;
+				assertTrue(ContainsType(rules, TestStereotype.Equality));
+				assertTrue(ContainsType(rules, TestStereotype.QualifiedField));
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
+	
+	
+	@Test
+	public void TestAssertionTypeForExternal(){
+		String fileString = "public class A {"
+				+"	private class B{"
+				+"		public int f = 2;"
+				+"		public int foo(int p){"
+				+"			return f = p;"
+				+"		}"
+				+"	}"
+				+"	B b = new B();" 
+				+"	@Test 	"
+				+"	public void testHelloWorld() {" 
+				+"		int a = 1;"
+				+ "		int c;"
+				+ " 	c = a;"
+				+ "     c = b.toString();"
+				+ "		assertEquals(c, b);"
+				+"	}"
+				+"}";
+		TestStereotypeAnalyzer analyzer = new TestStereotypeAnalyzer();
+		try {
+			analyzer.analyzeString(fileString);
+			for (Map.Entry<String, TestUnderAnalysis>  entry : analyzer.mapSignToTest.entrySet()) {
+				TestUnderAnalysis test = entry.getValue();
+				HashSet<TestStereotype> rules = test.matchedRules;
+				assertTrue(ContainsType(rules, TestStereotype.Equality));
+				assertTrue(ContainsType(rules, TestStereotype.ExternalCall));
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
 
 	
 	

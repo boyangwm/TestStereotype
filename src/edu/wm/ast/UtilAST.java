@@ -178,6 +178,23 @@ public class UtilAST {
 
 
 	
+	public static boolean isInternalCall(MethodInvocation call){
+		//IMethodBinding binding = (IMethodBinding) mInvoke.getName().resolveBinding();
+		ITypeBinding binding = (ITypeBinding) call.getName().resolveTypeBinding();
+		//ICompilationUnit unit = (ICompilationUnit) binding.getJavaElement().getAncestor( IJavaElement.COMPILATION_UNIT );
+		if(binding == null){
+			//external functions
+			return false;
+		}else{
+			//Java predefined functions 
+			if(((ITypeBinding) binding).getQualifiedName().startsWith("java")){
+				return false;
+			}
+			//Internal functions
+			return true;
+		}
+	}
+	
 	public static boolean IsQualifier(final SimpleName node){
 		ASTNode parent = node.getParent();
 		if(parent instanceof QualifiedName){

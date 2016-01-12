@@ -14,12 +14,17 @@ import org.eclipse.jdt.core.dom.MethodInvocation;
 import org.eclipse.jdt.core.dom.SimpleName;
 
 import edu.wm.Rules.RuleCollector;
+import edu.wm.ast.AssignmentMapVisitor;
 import edu.wm.ast.UtilAST;
 import edu.wm.constants.TestStereotype;
 
 public class TestUnderAnalysis {
 
 	public HashSet<TestStereotype> matchedRules = new HashSet<TestStereotype>(); //ruleCollector.ApplyRules(test);
+	
+	
+	
+	public HashSet<MethodInvocation> internalCalls;
 	
 
 	/**
@@ -86,9 +91,9 @@ public class TestUnderAnalysis {
 	
 	
 	
-	public void analyzeSlicingInfo(HashMap<MethodInvocation, HashSet<SimpleName>> asserstionToRelatedSM){
+	public void MergeInfo(AssignmentMapVisitor visitor){
 		//record all the information
-		this.asserstionToRelatedSM = asserstionToRelatedSM;
+		this.asserstionToRelatedSM = visitor.AsserstionToRelatedSM;
 		hasQualifier = false;
 		hasInternalCall = false;
 		hasExternalCall = false;
@@ -98,10 +103,11 @@ public class TestUnderAnalysis {
 			 hasInternalCall =  hasInternalCall || hasInternalCall(nameSet);
 			 hasExternalCall = hasExternalCall || hasExternalCall(nameSet);
 		}
+		this.internalCalls = visitor.internalCalls;
 	}
 	
 	
-	public boolean hasQualifiedVar(HashSet<SimpleName> nameSet){
+	private boolean hasQualifiedVar(HashSet<SimpleName> nameSet){
 		for(SimpleName name : nameSet){
 			if(UtilAST.IsQualifier(name)){
 				return true;
@@ -112,7 +118,7 @@ public class TestUnderAnalysis {
 	
 	
 	
-	public boolean hasInternalCall(HashSet<SimpleName> nameSet){
+	private boolean hasInternalCall(HashSet<SimpleName> nameSet){
 		for(SimpleName name : nameSet){
 			if(UtilAST.IsInvockedInternalMethod(name)){
 				return true;
@@ -123,7 +129,7 @@ public class TestUnderAnalysis {
 	
 	
 	
-	public boolean hasExternalCall(HashSet<SimpleName> nameSet){
+	private boolean hasExternalCall(HashSet<SimpleName> nameSet){
 		for(SimpleName name : nameSet){
 			if(UtilAST.IsInvockedExternalMethod(name)){
 				return true;

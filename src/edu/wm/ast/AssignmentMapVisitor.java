@@ -19,7 +19,9 @@ public class AssignmentMapVisitor extends ASTVisitor {
 
 	public HashMap<MethodInvocation, HashSet<SimpleName>> AsserstionToRelatedSM = new HashMap<MethodInvocation, HashSet<SimpleName>>();
 
-
+	public HashSet<MethodInvocation> internalCalls = new HashSet<MethodInvocation> ();
+	
+	
 
 	/**
 	 * Stores all assertions
@@ -143,6 +145,9 @@ public class AssignmentMapVisitor extends ASTVisitor {
 				relatedNameSet.addAll(varAssignManager.getAssigningVars(name));
 			}
 			AsserstionToRelatedSM.put(node, relatedNameSet);
+		}
+		if(UtilAST.isInternalCall(node)){
+			internalCalls.add(node);
 		}
 		return true;
 	}

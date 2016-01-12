@@ -34,9 +34,9 @@ public class RuleCollector {
             	test.matchedRules.add(rule.GetMethodStereotype());
             }
         }
-        if(test.matchedRules.size() == 0) {
-        	test.matchedRules.add(TestStereotype.Unclassified);
-        }
+//        if(test.matchedRules.size() == 0) {
+//        	test.matchedRules.add(TestStereotype.Unclassified);
+//        }
 	}
 
 

@@ -451,6 +451,7 @@ public class TestSlicing {
 				assertFalse(containsInSets(nameSet, "a"));        // c is refreshed. 
 				SimpleName b = getFirstInSets(nameSet, "b");
 				assertTrue(UtilAST.IsInvockedInternalMethod(b));
+		
 			}
 		}
 	}
