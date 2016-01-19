@@ -20,8 +20,8 @@ public class AssignmentMapVisitor extends ASTVisitor {
 	public HashMap<MethodInvocation, HashSet<SimpleName>> AsserstionToRelatedSM = new HashMap<MethodInvocation, HashSet<SimpleName>>();
 
 	public HashSet<MethodInvocation> internalCalls = new HashSet<MethodInvocation> ();
-	
-	
+
+
 
 	/**
 	 * Stores all assertions
@@ -33,8 +33,8 @@ public class AssignmentMapVisitor extends ASTVisitor {
 	 * Uses for assignment slicing
 	 */
 	private Stack<SimpleName> assignedVars = new Stack<SimpleName>();
-	
-	
+
+
 	private Stack<Boolean> isAssigningVar = new  Stack<Boolean>();
 
 	int lastLevel = 0;
@@ -55,6 +55,7 @@ public class AssignmentMapVisitor extends ASTVisitor {
 
 		//ignore useless key words
 		IVariableBinding binding = UtilAST.getBinding(node);
+	
 		if(binding == null){
 			return false;
 		}
@@ -67,7 +68,7 @@ public class AssignmentMapVisitor extends ASTVisitor {
 			varAssignManager.AddNewRelations(assignedVars.peek(), node, lastLevel == assignedVars.size());
 			isAssigningVar.pop();
 			isAssigningVar.push(true);
-			
+
 		}
 		lastLevel = assignedVars.size();
 		return true;
@@ -97,7 +98,7 @@ public class AssignmentMapVisitor extends ASTVisitor {
 		if(isAssigned == false){
 			varAssignManager.ClearByVar(popedVar);
 		}
-		
+
 	}
 
 
@@ -148,6 +149,12 @@ public class AssignmentMapVisitor extends ASTVisitor {
 		}
 		if(UtilAST.isInternalCall(node)){
 			internalCalls.add(node);
+			
+			//Self updated. such as, a.execution();
+			if(node.getExpression() instanceof SimpleName){
+				SimpleName theInvokedVar = (SimpleName)node.getExpression();
+				varAssignManager.AddNewRelations(theInvokedVar, theInvokedVar, false);
+			}
 		}
 		return true;
 	}

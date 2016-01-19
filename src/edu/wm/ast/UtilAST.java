@@ -17,10 +17,14 @@ import org.eclipse.jdt.core.dom.IVariableBinding;
 import org.eclipse.jdt.core.dom.MethodDeclaration;
 import org.eclipse.jdt.core.dom.MethodInvocation;
 import org.eclipse.jdt.core.dom.PackageDeclaration;
+import org.eclipse.jdt.core.dom.ParameterizedType;
+import org.eclipse.jdt.core.dom.PrimitiveType;
 import org.eclipse.jdt.core.dom.QualifiedName;
 import org.eclipse.jdt.core.dom.SimpleName;
 import org.eclipse.jdt.core.dom.SingleVariableDeclaration;
+import org.eclipse.jdt.core.dom.Type;
 import org.eclipse.jdt.core.dom.TypeDeclaration;
+import org.eclipse.jdt.core.dom.WildcardType;
 
 
 public class UtilAST {
@@ -35,6 +39,7 @@ public class UtilAST {
 	public static CompilationUnit getASTAndBindings(String source, String projectPath, String unitName) {
 		String[] sources = { projectPath };
 		ASTParser parser = ASTParser.newParser(AST.JLS4);
+
 		parser.setSource(source.toCharArray());
 		parser.setKind(ASTParser.K_COMPILATION_UNIT);
 		parser.setResolveBindings(true);
@@ -44,7 +49,7 @@ public class UtilAST {
 		Hashtable<String, String> options = JavaCore.getDefaultOptions();
 		options.put(JavaCore.COMPILER_SOURCE, JavaCore.VERSION_1_6);
 		options.put(JavaCore.COMPILER_DOC_COMMENT_SUPPORT, JavaCore.ENABLED);
-
+	
 		parser.setCompilerOptions(options);
 		parser.setUnitName(unitName);
 
@@ -132,9 +137,12 @@ public class UtilAST {
 		ASTNode parent = node.getParent();
 		if( parent instanceof MethodInvocation){
 			MethodInvocation mInvoke = (MethodInvocation)parent;
-			//IMethodBinding binding = (IMethodBinding) mInvoke.getName().resolveBinding();
-			ITypeBinding binding = (ITypeBinding) mInvoke.getName().resolveTypeBinding();
-			//ICompilationUnit unit = (ICompilationUnit) binding.getJavaElement().getAncestor( IJavaElement.COMPILATION_UNIT );
+			
+			//ITypeBinding binding = (ITypeBinding) mInvoke.getName().resolveTypeBinding();
+			ITypeBinding binding = null;
+			if(mInvoke.getExpression() != null){
+				binding =  mInvoke.getExpression().resolveTypeBinding();
+			}
 			if(binding == null){
 				//external functions
 				return false;
@@ -157,9 +165,11 @@ public class UtilAST {
 		ASTNode parent = node.getParent();
 		if( parent instanceof MethodInvocation){
 			MethodInvocation mInvoke = (MethodInvocation)parent;
-			//IMethodBinding binding = (IMethodBinding) mInvoke.getName().resolveBinding();
-			ITypeBinding binding = (ITypeBinding) mInvoke.getName().resolveTypeBinding();
-			//ICompilationUnit unit = (ICompilationUnit) binding.getJavaElement().getAncestor( IJavaElement.COMPILATION_UNIT );
+			//ITypeBinding binding = (ITypeBinding) mInvoke.getName().resolveTypeBinding();
+			ITypeBinding binding = null;
+			if(mInvoke.getExpression() != null){
+				binding =  mInvoke.getExpression().resolveTypeBinding();
+			}
 			if(binding == null){
 				//external functions
 				return true;
@@ -177,24 +187,32 @@ public class UtilAST {
 	}
 
 
-	
+
 	public static boolean isInternalCall(MethodInvocation call){
-		//IMethodBinding binding = (IMethodBinding) mInvoke.getName().resolveBinding();
-		ITypeBinding binding = (ITypeBinding) call.getName().resolveTypeBinding();
+		
+		//ITypeBinding binding = (ITypeBinding) call.getName().resolveTypeBinding();    //orig
+		ITypeBinding binding = null;
+		if(call.getExpression() != null){
+			binding =  call.getExpression().resolveTypeBinding();
+		}
 		//ICompilationUnit unit = (ICompilationUnit) binding.getJavaElement().getAncestor( IJavaElement.COMPILATION_UNIT );
 		if(binding == null){
 			//external functions
-			return false;
+			//return false;
+			return true;
 		}else{
 			//Java predefined functions 
 			if(((ITypeBinding) binding).getQualifiedName().startsWith("java")){
 				return false;
 			}
+			
+			//Type t = UtilAST.typeFromBinding(call.getAST(), binding);
 			//Internal functions
 			return true;
 		}
+		
 	}
-	
+
 	public static boolean IsQualifier(final SimpleName node){
 		ASTNode parent = node.getParent();
 		if(parent instanceof QualifiedName){
@@ -206,9 +224,9 @@ public class UtilAST {
 		return false;
 	}
 
-	
-	
-	
+
+
+
 	public static boolean IsField(final SimpleName node){
 		ASTNode parent = node.getParent();
 		if(parent instanceof QualifiedName){
@@ -219,4 +237,53 @@ public class UtilAST {
 		}
 		return false;
 	}
+	
+	
+	public static Type typeFromBinding(AST ast, ITypeBinding typeBinding) {
+	    if( ast == null ) 
+	        throw new NullPointerException("ast is null");
+	    if( typeBinding == null )
+	        throw new NullPointerException("typeBinding is null");
+
+	    if( typeBinding.isPrimitive() ) {
+	        return ast.newPrimitiveType(
+	            PrimitiveType.toCode(typeBinding.getName()));
+	    }
+
+	    if( typeBinding.isCapture() ) {
+	        ITypeBinding wildCard = typeBinding.getWildcard();
+	        WildcardType capType = ast.newWildcardType();
+	        ITypeBinding bound = wildCard.getBound();
+	        if( bound != null ) {
+	            capType.setBound(typeFromBinding(ast, wildCard.getBound()), wildCard.isUpperbound());
+	        }
+	        return capType;
+	    }
+
+	    if( typeBinding.isArray() ) {
+	        Type elType = typeFromBinding(ast, typeBinding.getElementType());
+	        return ast.newArrayType(elType, typeBinding.getDimensions());
+	    }
+
+	    if( typeBinding.isParameterizedType() ) {
+	        ParameterizedType type = ast.newParameterizedType(
+	            typeFromBinding(ast, typeBinding.getErasure()));
+
+	        @SuppressWarnings("unchecked")
+	        List<Type> newTypeArgs = type.typeArguments();
+	        for( ITypeBinding typeArg : typeBinding.getTypeArguments() ) {
+	            newTypeArgs.add(typeFromBinding(ast, typeArg));
+	        }
+
+	        return type;
+	    }
+
+	    // simple or raw type
+	    String qualName = typeBinding.getQualifiedName();
+	    if( "".equals(qualName) ) {
+	        throw new IllegalArgumentException("No name for type binding.");
+	    }
+	    return ast.newSimpleType(ast.newName(qualName));
+	}
+	
 }

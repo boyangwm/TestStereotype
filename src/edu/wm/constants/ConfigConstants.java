@@ -7,5 +7,6 @@ public class ConfigConstants {
 	//public static final String projectLoc = "D:\\Repositories\\TestStereotype\\Apps\\HelloWorldJunit"; 
 	//public static final String projectLoc = "C:\\Users\\Boyang\\Desktop\\Research\\Stereotype_test\\Apps\\DependencyFinder-1.2.1-beta4"; 
 	public static final String projectLoc = "C:\\Users\\Boyang\\Desktop\\Research\\Stereotype_test\\Apps\\apache-ant-1.9.6"; 
+	//public static final String projectLoc = "C:\\Users\\Boyang\\Desktop\\Research\\Stereotype_test\\Apps\\MyTest";   //debug internal call
 	
 }

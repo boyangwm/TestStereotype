@@ -23,6 +23,9 @@ public class VariableAssignmentManager {
 	 */
 	public void AddNewRelations(SimpleName assignedVarSN, SimpleName assigningVar, boolean refresh) {
 		IVariableBinding assignedVar = UtilAST.getBinding(assignedVarSN);
+		if(assignedVar == null){
+			return;
+		}
 		if(theMap.containsKey(assignedVar)){
 			if(refresh){
 				//add up all variable 

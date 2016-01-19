@@ -1,7 +1,9 @@
 package edu.wm.core;
 
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -54,6 +56,7 @@ public class TestStereotypeAnalyzer {
 	//Map of method signature to tests
 	public HashMap<String, TestUnderAnalysis> mapSignToTest = new  HashMap<String, TestUnderAnalysis>();
 
+	
 
 
 	/**
