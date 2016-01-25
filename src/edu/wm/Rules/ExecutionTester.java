@@ -1,5 +1,9 @@
 package edu.wm.Rules;
 
+import java.util.HashSet;
+
+import org.eclipse.jdt.core.dom.Annotation;
+
 import edu.wm.constants.TestStereotype;
 import edu.wm.core.TestUnderAnalysis;
 
@@ -16,13 +20,24 @@ public class ExecutionTester  extends StereotypeRule {
 	 */
 	@Override
 	protected boolean MakeClassification(TestUnderAnalysis mAnalyzer) {
-		if(mAnalyzer.getAssertionStmts().size() == 0 && mAnalyzer.internalCalls.size() > 0)
+		if(mAnalyzer.getAssertionStmts().size() == 0 && mAnalyzer.internalCalls.size() > 0){
+			HashSet<Annotation> annotations = mAnalyzer.getAnnotation();
+			for(Annotation annotation : annotations){
+				String annoationStr =  annotation.getTypeName().getFullyQualifiedName();
+				//should not be a test case setter
+				if(annoationStr.toLowerCase().equals("before") || annoationStr.toLowerCase().equals("beforeclass")|| 
+						annoationStr.toLowerCase().equals("after")|| annoationStr.toLowerCase().equals("afterclass")){
+					return false;
+				}
+			}
+			//return false;
 			return true;
-		else
+		}else{
 			return false;
+		}
 	}
 
-	
+
 
 	@Override
 	public TestStereotype GetMethodStereotype() {

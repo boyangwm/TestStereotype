@@ -3,20 +3,16 @@ package edu.wm.ast;
 import java.util.Hashtable;
 import java.util.List;
 
-import org.eclipse.jdt.core.ICompilationUnit;
-import org.eclipse.jdt.core.IJavaElement;
 import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.jdt.core.dom.AST;
 import org.eclipse.jdt.core.dom.ASTNode;
 import org.eclipse.jdt.core.dom.ASTParser;
 import org.eclipse.jdt.core.dom.CompilationUnit;
 import org.eclipse.jdt.core.dom.EnumDeclaration;
-import org.eclipse.jdt.core.dom.IMethodBinding;
 import org.eclipse.jdt.core.dom.ITypeBinding;
 import org.eclipse.jdt.core.dom.IVariableBinding;
 import org.eclipse.jdt.core.dom.MethodDeclaration;
 import org.eclipse.jdt.core.dom.MethodInvocation;
-import org.eclipse.jdt.core.dom.PackageDeclaration;
 import org.eclipse.jdt.core.dom.ParameterizedType;
 import org.eclipse.jdt.core.dom.PrimitiveType;
 import org.eclipse.jdt.core.dom.QualifiedName;
@@ -134,11 +130,12 @@ public class UtilAST {
 
 
 	public static boolean IsInvockedInternalMethod(final SimpleName node){
+		//return !IsInvockedExternalMethod(node);
 		ASTNode parent = node.getParent();
 		if( parent instanceof MethodInvocation){
 			MethodInvocation mInvoke = (MethodInvocation)parent;
 			
-			//ITypeBinding binding = (ITypeBinding) mInvoke.getName().resolveTypeBinding();
+			ITypeBinding bindingFunc = (ITypeBinding) mInvoke.getName().resolveTypeBinding();
 			ITypeBinding binding = null;
 			if(mInvoke.getExpression() != null){
 				binding =  mInvoke.getExpression().resolveTypeBinding();
@@ -148,6 +145,9 @@ public class UtilAST {
 				return false;
 			}else{
 				//Java predefined functions 
+				if(((ITypeBinding) bindingFunc).getQualifiedName().startsWith("java")){
+					return false;
+				}
 				if(((ITypeBinding) binding).getQualifiedName().startsWith("java")){
 					return false;
 				}
@@ -165,7 +165,7 @@ public class UtilAST {
 		ASTNode parent = node.getParent();
 		if( parent instanceof MethodInvocation){
 			MethodInvocation mInvoke = (MethodInvocation)parent;
-			//ITypeBinding binding = (ITypeBinding) mInvoke.getName().resolveTypeBinding();
+			ITypeBinding bindingFunc = (ITypeBinding) mInvoke.getName().resolveTypeBinding();
 			ITypeBinding binding = null;
 			if(mInvoke.getExpression() != null){
 				binding =  mInvoke.getExpression().resolveTypeBinding();
@@ -175,6 +175,9 @@ public class UtilAST {
 				return true;
 			}else{
 				//Java predefined functions 
+				if(((ITypeBinding) bindingFunc).getQualifiedName().startsWith("java")){
+					return true;
+				}
 				if(((ITypeBinding) binding).getQualifiedName().startsWith("java")){
 					return true;
 				}
