@@ -39,6 +39,8 @@ public class TestUnderAnalysis {
 	
 	private boolean hasExternalCall = false;
 	
+	private boolean isEmpty = false;
+	
 	
 	/**
 	 * AST node (MethodDeclaration)
@@ -86,6 +88,7 @@ public class TestUnderAnalysis {
 	public TestUnderAnalysis(MethodDeclaration method, HashSet<Annotation> annotations){
 		this.method = method;
 		this.annotations = annotations;
+		this.isEmpty = 	(method.getBody().statements().size() == 0);
 	}
 
 	
@@ -189,6 +192,14 @@ public class TestUnderAnalysis {
 	 */
 	public boolean isHasExternalCall() {
 		return hasExternalCall;
+	}
+
+	
+	/**
+	 * @return the isEmpty
+	 */
+	public boolean isEmpty() {
+		return this.isEmpty;
 	}
 
 

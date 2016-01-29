@@ -2,6 +2,9 @@ package UnitTests;
 
 import static org.junit.Assert.*;
 
+import java.io.File;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -11,6 +14,7 @@ import java.util.Set;
 import org.eclipse.jdt.core.dom.AST;
 import org.eclipse.jdt.core.dom.ASTParser;
 import org.eclipse.jdt.core.dom.ASTVisitor;
+import org.eclipse.jdt.core.dom.Annotation;
 import org.eclipse.jdt.core.dom.CompilationUnit;
 import org.eclipse.jdt.core.dom.MethodDeclaration;
 import org.eclipse.jdt.core.dom.MethodInvocation;
@@ -19,6 +23,7 @@ import org.junit.Test;
 
 import edu.wm.ast.AssertionInvocationVisitor;
 import edu.wm.ast.MethodDeclarationVisitor;
+import edu.wm.ast.UtilAST;
 import edu.wm.constants.TestAnnotation;
 import edu.wm.constants.TestStereotype;
 import edu.wm.core.TestStereotypeAnalyzer;
@@ -99,12 +104,36 @@ public class TestTestUnderAnalysis {
 			for (Map.Entry<String, TestUnderAnalysis>  entry : analyzer.mapSignToTest.entrySet()) {
 				TestUnderAnalysis test = entry.getValue();
 				HashSet<TestStereotype> rules = test.matchedRules;
-				assertTrue(ContainsType(rules, TestStereotype.Condition));
+				assertTrue(ContainsType(rules, TestStereotype.BooleanV));
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
+	
+	
+	@Test
+	public void TestAssertionTypeNull(){
+		String methodTest = "public class A { "
+				+ "		@Test "
+				+ "		public void testHelloWorld() { "
+				+ " 		h.setBool(false);"
+				+ "			assertNull(h); "
+				+ "		}  "
+				+ "}";
+		TestStereotypeAnalyzer analyzer = new TestStereotypeAnalyzer();
+		try {
+			analyzer.analyzeString(methodTest);
+			for (Map.Entry<String, TestUnderAnalysis>  entry : analyzer.mapSignToTest.entrySet()) {
+				TestUnderAnalysis test = entry.getValue();
+				HashSet<TestStereotype> rules = test.matchedRules;
+				assertTrue(ContainsType(rules, TestStereotype.NullVerifier));
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
 
 
 
@@ -224,7 +253,7 @@ public class TestTestUnderAnalysis {
 			for (Map.Entry<String, TestUnderAnalysis>  entry : analyzer.mapSignToTest.entrySet()) {
 				TestUnderAnalysis test = entry.getValue();
 				HashSet<TestStereotype> rules = test.matchedRules;
-				assertTrue(ContainsType(rules, TestStereotype.Setter));
+				assertTrue(ContainsType(rules, TestStereotype.Initializer));
 
 			}
 		} catch (Exception e) {
@@ -478,6 +507,35 @@ public class TestTestUnderAnalysis {
 		}
 	}
 
+	
+	
+	
+	
+	@Test
+	public void TestEmpty(){
+		
+		String fileString = "public class A {"
+				+"	@Test 	"
+				+"	public void testHelloWorld() {" 
+				+"	}"
+				+"}";
+		
+		
+
+		TestStereotypeAnalyzer analyzer = new TestStereotypeAnalyzer();
+		try {
+			analyzer.analyzeString(fileString);
+			for (Map.Entry<String, TestUnderAnalysis>  entry : analyzer.mapSignToTest.entrySet()) {
+				TestUnderAnalysis test = entry.getValue();
+				HashSet<TestStereotype> rules = test.matchedRules;
+				//assertTrue(ContainsType(rules, TestStereotype.Equality));
+				assertTrue(ContainsType(rules, TestStereotype.Empty));
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+	
 	
 	
 	

@@ -3,11 +3,12 @@ package edu.wm.constants;
 public enum TestStereotype {
 
 	//category 1
-	Setter("TestSetter", "This type test case sets the evironment of the test case.", 1),
+	Initializer("TestInitializer", "This type test case sets the evironment of the test case.", 1),
 	Cleaner("TestCleaner", "This type test case cleans the evironment of the test case.", 1),
 	Exception("ExceptionVerifier", "This type test case verifies whether the test case throws expected exception.", 1),
-	Condition("ConditionVerifier", "This type of test case verifies boolean conditions.", 1),
-	Equality("EqualityVerifier", "This type of test case verifies whether the two arguments’ values are equal.", 1),
+	BooleanV("BooleanVerifier", "This type of test case verifies boolean conditions.", 1),
+	NullVerifier("NullVerifier", "This type of test case verifies null conditions", 1),
+	Equality("EqualityVerifier", "This type of test case verifies whether the two argumentsï¿½values are equal.", 1),
 	Identity("IdentityVerifier", "This type of test case verifies whether two arguments reference the same object.", 1),
 	Utility("UtilityVerifier", "This type of test case verifies control of the test process.", 1),
 	Hybrid("HybridVerifier", "This type of test case verifies whether two arguments reference the same object.", 1),
@@ -18,8 +19,9 @@ public enum TestStereotype {
 	InternalCall("InternalCallVerifier", "This type of test case verifies assertions related to internal function call", 2),
 	ExternalCall("ExternalCallVerifier", "This type of test case verifies assertions related to external function call", 2),
 	QualifiedField("QualifiedFieldVerifier", "This type of test case verifies assertions related to qualified field", 2),
-	Execution("ExecutionTester", "This type of test case runs/tests internal functions.", 2);
-	
+	Execution("ExecutionTester", "This type of test case runs/tests internal functions.", 2),
+	Empty("EmptyTester", "This type of test case has no statement in the function.", 2),
+	Logger("Logger", "This type of test case is a logger.", 2);
 
 	private final String name;     
 	private final String desc;   

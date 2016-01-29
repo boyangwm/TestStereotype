@@ -21,9 +21,10 @@ public class JavaJunit4Collector extends RuleCollector {
 	protected void DefineRuleSet() {
 		ArrayList<StereotypeRule> ruleList = new ArrayList<StereotypeRule>();
 		ruleList.add(new RuleTestCleaner());
-		ruleList.add(new RuleTestSetter());
+		ruleList.add(new RuleTestInitializer());
 		ruleList.add(new RuleExceptionVerifier());
-		ruleList.add(new RuleConditionVerifier());
+		ruleList.add(new RuleBooleanVerifier());
+		ruleList.add(new RuleNullVerifier());
 		ruleList.add(new RuleEqualityVerifier());
 		ruleList.add(new RuleIdentityVerifier());
 		ruleList.add(new RuleUtilityVerifier());

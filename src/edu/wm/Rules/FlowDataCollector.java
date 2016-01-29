@@ -24,7 +24,8 @@ public class FlowDataCollector extends RuleCollector {
 		ruleList.add(new RuleExternalCallVerifier());
 		ruleList.add(new RuleInternalCallVerifier());
 		ruleList.add(new RuleQualifiedFieldVerifier());
-		ruleList.add(new ExecutionTester());
+		ruleList.add(new RuleExecutionTester());
+		ruleList.add(new RuleEmptyTester());
 		this.rules = ruleList;
 		
 	}

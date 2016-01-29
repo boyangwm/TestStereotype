@@ -260,7 +260,7 @@ public class TestStereotypeAnalyzer {
 		test.getMethod().accept(assertionVisitor);
 		test.setAssertionStmts(assertionVisitor.getAssertions());
 		
-		//2. Slicing analysis/method analysis 
+		//2. Slicing analysis/method analysis , dataflow analysis
 		AssignmentMapVisitor assignmentMapVisitor = new AssignmentMapVisitor(test.getAssertionStmts());
 		test.getMethod().accept(assignmentMapVisitor);
 		test.MergeInfo(assignmentMapVisitor);

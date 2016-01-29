@@ -13,12 +13,12 @@ import edu.wm.core.TestUnderAnalysis;
  * @author Boyang
  *
  */
-public class RuleTestSetter  extends StereotypeRule {
+public class RuleTestInitializer  extends StereotypeRule {
 
 	/**
 	 * Creates a new RuleTestSetter using default values for data sets.
 	 */
-	public RuleTestSetter()  {super(); }
+	public RuleTestInitializer()  {super(); }
 
 
 
@@ -43,7 +43,7 @@ public class RuleTestSetter  extends StereotypeRule {
 	@Override
 	public TestStereotype GetMethodStereotype() {
 		// TODO Auto-generated method stub
-		return TestStereotype.Setter;
+		return TestStereotype.Initializer;
 	}
 
 }

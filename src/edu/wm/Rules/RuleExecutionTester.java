@@ -7,11 +7,11 @@ import org.eclipse.jdt.core.dom.Annotation;
 import edu.wm.constants.TestStereotype;
 import edu.wm.core.TestUnderAnalysis;
 
-public class ExecutionTester  extends StereotypeRule {
+public class RuleExecutionTester  extends StereotypeRule {
 	/**
 	 * Creates a new RuleTestCleaner using default values for data sets.
 	 */
-	public ExecutionTester()  {super(); }
+	public RuleExecutionTester()  {super(); }
 
 
 

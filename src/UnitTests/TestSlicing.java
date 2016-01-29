@@ -508,6 +508,34 @@ public class TestSlicing {
 	
 	
 	
+	@Test
+	public void TestEmpty(){
+		
+		String fileString = "public class A {"
+				+"	@Test 	"
+				+"	public void testHelloWorld() {" 
+				+"	}"
+				+"}";
+		
+		
+
+		Path currentRelativePath = Paths.get("");
+
+		final CompilationUnit cu = UtilAST.getASTAndBindings(fileString, currentRelativePath.toAbsolutePath().toString()+File.separator+"Apps"+File.separator+"Testing", "A");
+		MethodDeclarationVisitor methodVisitor = new MethodDeclarationVisitor();
+		cu.accept(methodVisitor);
+		for (MethodDeclaration method : methodVisitor.getMethods()) {
+
+			HashSet<Annotation> annotations = TestStereotypeAnalyzer.ReturnAnnotation(method);
+			if(TestAnnotation.contains(annotations)){
+				TestUnderAnalysis testMethod = new TestUnderAnalysis(method, annotations);
+			
+				assertTrue(testMethod.isEmpty());
+			}
+		}
+	}
+	
+	
 	
 
 	/**
