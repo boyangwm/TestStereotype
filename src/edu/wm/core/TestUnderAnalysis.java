@@ -26,6 +26,8 @@ public class TestUnderAnalysis {
 	
 	public HashSet<MethodInvocation> internalCalls;
 	
+	public HashSet<MethodInvocation> allCalls;
+	
 
 	/**
 	 * assertion to related assigned variables. 
@@ -40,6 +42,8 @@ public class TestUnderAnalysis {
 	private boolean hasExternalCall = false;
 	
 	private boolean isEmpty = false;
+	
+	
 	
 	
 	/**
@@ -89,6 +93,7 @@ public class TestUnderAnalysis {
 		this.method = method;
 		this.annotations = annotations;
 		this.isEmpty = 	(method.getBody().statements().size() == 0);
+		
 	}
 
 	
@@ -107,6 +112,7 @@ public class TestUnderAnalysis {
 			 hasExternalCall = hasExternalCall || hasExternalCall(nameSet);
 		}
 		this.internalCalls = visitor.internalCalls;
+		this.allCalls = visitor.calls;
 	}
 	
 	
@@ -202,6 +208,8 @@ public class TestUnderAnalysis {
 		return this.isEmpty;
 	}
 
+	
+	
 
 
 }

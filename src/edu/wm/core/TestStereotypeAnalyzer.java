@@ -12,6 +12,7 @@ import java.util.Hashtable;
 import java.util.Map;
 import java.util.logging.Level;
 
+import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.filefilter.TrueFileFilter;
 import org.eclipse.jdt.core.JavaCore;
@@ -56,7 +57,7 @@ public class TestStereotypeAnalyzer {
 	//Map of method signature to tests
 	public HashMap<String, TestUnderAnalysis> mapSignToTest = new  HashMap<String, TestUnderAnalysis>();
 
-	
+
 
 
 	/**
@@ -145,6 +146,9 @@ public class TestStereotypeAnalyzer {
 					//If it's a test case, put the method into the map.
 					HashSet<Annotation> annotations = ReturnAnnotation(method);
 					if(TestAnnotation.contains(annotations)){
+						if(method.getBody() == null){
+							continue;
+						}
 						TestUnderAnalysis testMethod = new TestUnderAnalysis(method, annotations);
 						mapSignToTest.put(sign, testMethod);
 					}
@@ -187,14 +191,17 @@ public class TestStereotypeAnalyzer {
 			//If it's a test case, put the method into the map.
 			HashSet<Annotation> annotations = ReturnAnnotation(method);
 			if(TestAnnotation.contains(annotations)){
+				if(method.getBody() == null){
+					continue;
+				}
 				TestUnderAnalysis testMethod = new TestUnderAnalysis(method, annotations);
 				mapSignToTest.put(sign, testMethod);
 			}
 		}
 	}
-	
-	
-	
+
+
+
 	public static CompilationUnit StringToCU(String fileString){
 		String[] sources = { "" };
 		ASTParser parser = ASTParser.newParser(AST.JLS4);
@@ -259,13 +266,13 @@ public class TestStereotypeAnalyzer {
 		AssertionInvocationVisitor assertionVisitor = new AssertionInvocationVisitor();
 		test.getMethod().accept(assertionVisitor);
 		test.setAssertionStmts(assertionVisitor.getAssertions());
-		
+
 		//2. Slicing analysis/method analysis , dataflow analysis
 		AssignmentMapVisitor assignmentMapVisitor = new AssignmentMapVisitor(test.getAssertionStmts());
 		test.getMethod().accept(assignmentMapVisitor);
 		test.MergeInfo(assignmentMapVisitor);
-		
-		
+
+
 	}
 
 
@@ -286,8 +293,8 @@ public class TestStereotypeAnalyzer {
 			test.applyRuleCollector(ruleCollectorJunit4);
 			test.applyRuleCollector(flowCollector);
 			if(test.matchedRules.size() == 0) {
-	        	test.matchedRules.add(TestStereotype.Unclassified);
-	        }
+				test.matchedRules.add(TestStereotype.Unclassified);
+			}
 		}
 	}
 
@@ -298,14 +305,20 @@ public class TestStereotypeAnalyzer {
 	 */
 	public void printTestType(){
 		for (Map.Entry<String, TestUnderAnalysis>  entry : mapSignToTest.entrySet()) {
-			System.out.println("\nMethod : " + entry.getKey());
+			System.out.println("");
+			System.out.println("Method: " + entry.getKey());
 			TestUnderAnalysis test = entry.getValue();
 			HashSet<TestStereotype> rules = test.matchedRules;
-			System.out.println("Rules : ");
+			System.out.print("Rules: ");
+			int i = 0;
 			for(TestStereotype rule : rules){
-				System.out.println(rule.toString());
+				if(i < rules.size() - 1)
+					System.out.print(rule.toString() + ",");
+				else
+					System.out.print(rule.toString());
+				i++;
 			}
-
+			System.out.println("");
 		}
 	}
 
@@ -316,9 +329,9 @@ public class TestStereotypeAnalyzer {
 		for(TestStereotype type: TestStereotype.values()){
 			typeToOccurrence.put(type, 0);
 		}
-		
+
 		System.out.println("# of Detected test cases : " + mapSignToTest.size() );
-		
+
 		for (Map.Entry<String, TestUnderAnalysis>  entry : mapSignToTest.entrySet()) {
 			TestUnderAnalysis test = entry.getValue();
 			HashSet<TestStereotype> rules = test.matchedRules;
@@ -327,12 +340,83 @@ public class TestStereotypeAnalyzer {
 				typeToOccurrence.put(rule, currentOccur + 1);
 			}
 		}
-		
+
 		for(Map.Entry<TestStereotype, Integer>  entry : typeToOccurrence.entrySet()){
 			System.out.println(entry.getKey().toString()  +  " occurs " + entry.getValue() + " times."); 
 		}
-		
+
 	}
 
+
+	public void printXML(String projName){
+		System.out.println("<report>");
+		System.out.println("<name>");
+		System.out.println(projName);
+		System.out.println("</name>");
+
+		System.out.println("<detailSummary>");
+		for (Map.Entry<String, TestUnderAnalysis>  entry : mapSignToTest.entrySet()) {
+			TestUnderAnalysis test = entry.getValue();
+			System.out.println("<method>");
+			System.out.println("<signature>" + entry.getKey() + "</signature>");
+			System.out.println("<code>");
+			String code = StringEscapeUtils.escapeXml(test.getMethod().toString());
+			//			code = code.replaceAll("<", "&lt;");       
+			//			code = code.replaceAll(">", "&gt;");
+			// *     & - &amp;
+			//    < - &lt;
+			//    > - &gt;
+			//    " - &quot;
+			//    ' - &apos;
+
+			
+			System.out.print(code);
+			System.out.println("</code>");
+			System.out.println("<types>");
+			HashSet<TestStereotype> rules = test.matchedRules;
+			int i = 0;
+			for(TestStereotype rule : rules){
+				System.out.println("<type id=\"" + rule.getId() + "\">");
+				System.out.println(rule.toString());
+				System.out.println("</type>");
+			}
+			System.out.println("</types>");
+			System.out.println("</method>\n");
+		}
+		System.out.println("</detailSummary>");
+
+		//summary
+		HashMap <TestStereotype, Integer> typeToOccurrence = new HashMap<TestStereotype, Integer>();
+		for(TestStereotype type: TestStereotype.values()){
+			typeToOccurrence.put(type, 0);
+		}
+		for (Map.Entry<String, TestUnderAnalysis>  entry : mapSignToTest.entrySet()) {
+			TestUnderAnalysis test = entry.getValue();
+			HashSet<TestStereotype> rules = test.matchedRules;
+			for(TestStereotype rule : rules){
+				int currentOccur = typeToOccurrence.get(rule);
+				typeToOccurrence.put(rule, currentOccur + 1);
+			}
+		}
+
+
+		System.out.println("<summary>");
+		System.out.println("<totalMethod>");
+		System.out.println(mapSignToTest.size() );
+		System.out.println("</totalMethod>");
+		for(Map.Entry<TestStereotype, Integer>  entry : typeToOccurrence.entrySet()){
+			System.out.println("<type>");
+			System.out.print("<name>");
+			System.out.print(entry.getKey().toString());
+			System.out.print("</name>");
+			System.out.print("<occurs>");
+			System.out.print(entry.getValue().toString());
+			System.out.print("</occurs>");
+			System.out.println("</type>");
+		}
+
+		System.out.println("</summary>");
+		System.out.println("</report>");
+	}
 
 }

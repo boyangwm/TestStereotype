@@ -28,8 +28,11 @@ public class JavaJunit4Collector extends RuleCollector {
 		ruleList.add(new RuleEqualityVerifier());
 		ruleList.add(new RuleIdentityVerifier());
 		ruleList.add(new RuleUtilityVerifier());
+		ruleList.add(new ConditionMatcherVerifier());
+		ruleList.add(new RuleIgnoredMethod());
+		ruleList.add(new RuleAssumptionSetter());
 		
-		
+		ruleList.add(new RuleLogger());
 		ruleList.add(new RuleHybridVerifier()); //Should be the last one 
 		this.rules = ruleList;
 	}

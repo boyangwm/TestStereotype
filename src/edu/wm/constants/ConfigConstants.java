@@ -11,6 +11,8 @@ public class ConfigConstants {
 	//public static final String projectLoc = "C:\\Users\\Boyang\\Desktop\\Research\\Stereotype_test\\Apps\\ArgoUML-0.34";   -No test cases detected.
 	//public static final String projectLoc = "C:\\Users\\Boyang\\Desktop\\Research\\Stereotype_test\\Apps\\Colossus-0.14.0"; -No test cases detected.
 	//public static final String projectLoc = "C:\\Users\\Boyang\\Desktop\\Research\\Stereotype_test\\Apps\\findbugs-3.0.1"; -No test cases detected.
-	public static final String projectLoc = "C:\\Users\\Boyang\\Desktop\\Research\\Stereotype_test\\Apps\\jabref-3.0";
-		
+	//public static final String projectLoc = "C:\\Users\\Boyang\\Desktop\\Research\\Stereotype_test\\Apps\\jabref-3.0";
+	//public static final String projectLoc = "C:\\Users\\Boyang\\Desktop\\Apps\\airavata-master"; 
+	public static final String projectLoc = "C:\\Users\\Boyang\\Desktop\\Apps\\group1\\groovy-2.4.5"; 
+	
 }

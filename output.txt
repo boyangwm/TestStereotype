@@ -1,0 +1,75 @@
+
+Method: org.codehaus.groovy.jsr223.JSR223SecurityTest.should_forbid_an_instruction_when_overriding_GroovyClassLoader_using_reflection()
+Rules: ExceptionVerifier,ExecutionTester
+
+Method: typing.TypeCheckingJavaTest.testJavaMethodSelection()
+Rules: EqualityVerifier,APIUtilityVerifier
+
+Method: BSFSpecTest.testVariablePassing()
+Rules: EqualityVerifier,InternalCallVerifier
+
+Method: org.codehaus.groovy.jsr223.JSR223SecurityTest.should_forbid_an_instruction_when_overriding_GroovyClassLoader_using_injection()
+Rules: ExceptionVerifier,ExecutionTester
+
+Method: org.codehaus.groovy.control.io.AbstractReaderSourceTest.testGetLine_NullJanitor()
+Rules: EqualityVerifier,InternalCallVerifier
+
+Method: org.codehaus.groovy.control.io.AbstractReaderSourceTest.setUp()
+Rules: TestInitializer
+
+Method: BSFSpecTest.testApply()
+Rules: EqualityVerifier,InternalCallVerifier
+
+Method: JSR223SpecTest.testInvocableFunction()
+Rules: EqualityVerifier,APIUtilityVerifier
+
+Method: org.codehaus.groovy.tools.rootloadersync.SubclassingInJavaTest.testGenericSubclassWithBafflingSymptom()
+Rules: ExecutionTester
+
+Method: org.codehaus.groovy.transform.SingletonASTTransformationTest.testVisit_Contract()
+Rules: BooleanVerifier,UtilityVerifier,HybridVerifier
+
+Method: BSFSpecTest.testSimpleIntegration()
+Rules: EqualityVerifier,InternalCallVerifier
+
+Method: org.codehaus.groovy.control.io.AbstractReaderSourceTest.testGetLine()
+Rules: EqualityVerifier,NullVerifier,InternalCallVerifier,HybridVerifier
+
+Method: org.codehaus.groovy.jsr223.JSR223SecurityTest.should_forbid_an_instruction_when_overriding_GroovyClassLoader_using_constructor()
+Rules: ExceptionVerifier,ExecutionTester
+
+Method: BSFSpecTest.testAccess()
+Rules: EqualityVerifier,InternalCallVerifier
+
+Method: org.codehaus.groovy.jsr223.JSR223SecurityTest.resetTestFixture()
+Rules: TestInitializer
+
+Method: org.codehaus.groovy.tools.rootloadersync.SubclassingInJavaTest.testSubclass()
+Rules: EqualityVerifier,InternalCallVerifier
+
+Method: JSR223SpecTest.testSimpleExample()
+Rules: EqualityVerifier,APIUtilityVerifier
+
+
+# of Detected test cases : 17
+EmptyTester occurs 0 times.
+IgnoredMethod occurs 0 times.
+PublicFieldVerifier occurs 0 times.
+NullVerifier occurs 1 times.
+Unclassified occurs 0 times.
+ExceptionVerifier occurs 3 times.
+Logger occurs 0 times.
+AssumptionSetter occurs 0 times.
+APIUtilityVerifier occurs 3 times.
+TestInitializer occurs 2 times.
+EqualityVerifier occurs 10 times.
+BooleanVerifier occurs 1 times.
+InternalCallVerifier occurs 7 times.
+BranchVerifier occurs 0 times.
+IterativeVerifier occurs 0 times.
+UtilityVerifier occurs 1 times.
+ExecutionTester occurs 4 times.
+IdentityVerifier occurs 0 times.
+TestCleaner occurs 0 times.
+ConditionMatcher occurs 0 times.
+HybridVerifier occurs 2 times.

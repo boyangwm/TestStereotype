@@ -36,11 +36,18 @@ public class RuleExceptionVerifier extends StereotypeRule{
 				NormalAnnotation nannotation = (NormalAnnotation)annotation;
 				List<MemberValuePair> valuePairs = nannotation.values();
 				for(MemberValuePair pair : valuePairs){
+					try{
 					Expression exp = pair.getValue();
+					if(exp.resolveTypeBinding() == null){
+						continue;
+					}
 					if(exp.resolveTypeBinding().getName().contains("Exception")){
 						return true;
 					}
 					//.getSuperclass();
+					}catch(Exception ex){
+						ex.printStackTrace();
+					}
 				}
 			}
 		}

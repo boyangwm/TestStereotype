@@ -1,0 +1,403 @@
+<report>
+<name>
+groovy-2.4.5
+</name>
+<detailSummary>
+<method>
+<signature>org.codehaus.groovy.jsr223.JSR223SecurityTest.should_forbid_an_instruction_when_overriding_GroovyClassLoader_using_reflection()</signature>
+<code>
+@Test(expected=ScriptException.class) public void should_forbid_an_instruction_when_overriding_GroovyClassLoader_using_reflection() throws Exception {
+  secureEval(ClassLoaderDefinitionType.REFLECTION);
+}
+</code>
+<types>
+<type id="3">
+ExceptionVerifier
+</type>
+<type id="19">
+ExecutionTester
+</type>
+</types>
+</method>
+
+<method>
+<signature>typing.TypeCheckingJavaTest.testJavaMethodSelection()</signature>
+<code>
+@Test public void testJavaMethodSelection(){
+  Object string=&quot;Some string&quot;;
+  Object result=compute(string);
+  System.out.println(result);
+  assertEquals(&quot;Nope&quot;,result);
+}
+</code>
+<types>
+<type id="6">
+EqualityVerifier
+</type>
+<type id="17">
+APIUtilityVerifier
+</type>
+</types>
+</method>
+
+<method>
+<signature>BSFSpecTest.testVariablePassing()</signature>
+<code>
+@Test public void testVariablePassing() throws BSFException {
+  BSFManager manager=new BSFManager();
+  manager.declareBean(&quot;xyz&quot;,4,Integer.class);
+  Object answer=manager.eval(&quot;groovy&quot;,&quot;test.groovy&quot;,0,0,&quot;xyz + 1&quot;);
+  assertEquals(5,answer);
+}
+</code>
+<types>
+<type id="6">
+EqualityVerifier
+</type>
+<type id="16">
+InternalCallVerifier
+</type>
+</types>
+</method>
+
+<method>
+<signature>org.codehaus.groovy.jsr223.JSR223SecurityTest.should_forbid_an_instruction_when_overriding_GroovyClassLoader_using_injection()</signature>
+<code>
+@Test(expected=ScriptException.class) public void should_forbid_an_instruction_when_overriding_GroovyClassLoader_using_injection() throws Exception {
+  secureEval(ClassLoaderDefinitionType.INJECTION);
+}
+</code>
+<types>
+<type id="3">
+ExceptionVerifier
+</type>
+<type id="19">
+ExecutionTester
+</type>
+</types>
+</method>
+
+<method>
+<signature>org.codehaus.groovy.control.io.AbstractReaderSourceTest.testGetLine_NullJanitor()</signature>
+<code>
+@Test public void testGetLine_NullJanitor(){
+  final String line=readerSource.getLine(1,null);
+  Assert.assertEquals(&quot;Wrong source line&quot;,SAMPLE_SOURCE_LINE1,line);
+}
+</code>
+<types>
+<type id="6">
+EqualityVerifier
+</type>
+<type id="16">
+InternalCallVerifier
+</type>
+</types>
+</method>
+
+<method>
+<signature>org.codehaus.groovy.control.io.AbstractReaderSourceTest.setUp()</signature>
+<code>
+@Before public void setUp() throws Exception {
+  readerSource=new AbstractReaderSourceSubclass();
+  janitor=new Janitor();
+}
+</code>
+<types>
+<type id="1">
+TestInitializer
+</type>
+</types>
+</method>
+
+<method>
+<signature>BSFSpecTest.testApply()</signature>
+<code>
+@Test public void testApply() throws BSFException {
+  BSFManager manager=new BSFManager();
+  Vector&lt;String&gt; ignoreParamNames=null;
+  Vector&lt;Integer&gt; args=new Vector&lt;Integer&gt;();
+  args.add(2);
+  args.add(5);
+  args.add(1);
+  Integer actual=(Integer)manager.apply(&quot;groovy&quot;,&quot;applyTest&quot;,0,0,&quot;def summer = { a, b, c -&gt; a * 100 + b * 10 + c }&quot;,ignoreParamNames,args);
+  assertEquals(251,actual.intValue());
+}
+</code>
+<types>
+<type id="6">
+EqualityVerifier
+</type>
+<type id="16">
+InternalCallVerifier
+</type>
+</types>
+</method>
+
+<method>
+<signature>JSR223SpecTest.testInvocableFunction()</signature>
+<code>
+@Test public void testInvocableFunction() throws ScriptException, NoSuchMethodException {
+  ScriptEngineManager factory=new ScriptEngineManager();
+  ScriptEngine engine=factory.getEngineByName(&quot;groovy&quot;);
+  String fact=&quot;def factorial(n) { n == 1 ? 1 : n * factorial(n - 1) }&quot;;
+  engine.eval(fact);
+  Invocable inv=(Invocable)engine;
+  Object[] params={5};
+  Object result=inv.invokeFunction(&quot;factorial&quot;,params);
+  assertEquals(new Integer(120),result);
+}
+</code>
+<types>
+<type id="6">
+EqualityVerifier
+</type>
+<type id="17">
+APIUtilityVerifier
+</type>
+</types>
+</method>
+
+<method>
+<signature>org.codehaus.groovy.tools.rootloadersync.SubclassingInJavaTest.testGenericSubclassWithBafflingSymptom()</signature>
+<code>
+@Test public void testGenericSubclassWithBafflingSymptom(){
+  OtherConcreteGenericJavaSubclass unrelatedInstance=new OtherConcreteGenericJavaSubclass(new HashSet&lt;String&gt;());
+  ConcreteGenericJavaSubclass instance=new ConcreteGenericJavaSubclass(new HashSet&lt;String&gt;());
+  instance.addNote(&quot;abcd&quot;);
+}
+</code>
+<types>
+<type id="19">
+ExecutionTester
+</type>
+</types>
+</method>
+
+<method>
+<signature>org.codehaus.groovy.transform.SingletonASTTransformationTest.testVisit_Contract()</signature>
+<code>
+@Test public void testVisit_Contract(){
+  try {
+    ASTNode[] badInput=new ASTNode[]{new ConstantExpression(&quot;sample&quot;),new EmptyExpression()};
+    new SingletonASTTransformation().visit(badInput,null);
+    Assert.fail(&quot;Contract Failure&quot;);
+  }
+ catch (  Error e) {
+    Assert.assertTrue(&quot;Bad error msg: &quot; + e.getMessage(),e.getMessage().contains(&quot;ConstantExpression&quot;));
+    Assert.assertTrue(&quot;Bad error msg: &quot; + e.getMessage(),e.getMessage().contains(&quot;EmptyExpression&quot;));
+    Assert.assertTrue(&quot;Bad error msg: &quot; + e.getMessage(),e.getMessage().contains(&quot;expecting [AnnotationNode, AnnotatedNode]&quot;));
+  }
+}
+</code>
+<types>
+<type id="4">
+BooleanVerifier
+</type>
+<type id="8">
+UtilityVerifier
+</type>
+<type id="10">
+HybridVerifier
+</type>
+</types>
+</method>
+
+<method>
+<signature>BSFSpecTest.testSimpleIntegration()</signature>
+<code>
+@Test public void testSimpleIntegration() throws BSFException {
+  String myScript=&quot;println(&apos;Hello World&apos;)\n  return [1, 2, 3]&quot;;
+  BSFManager manager=new BSFManager();
+  List answer=(List)manager.eval(&quot;groovy&quot;,&quot;myScript.groovy&quot;,0,0,myScript);
+  assertEquals(3,answer.size());
+}
+</code>
+<types>
+<type id="6">
+EqualityVerifier
+</type>
+<type id="16">
+InternalCallVerifier
+</type>
+</types>
+</method>
+
+<method>
+<signature>org.codehaus.groovy.control.io.AbstractReaderSourceTest.testGetLine()</signature>
+<code>
+@Test public void testGetLine(){
+  final String line0=readerSource.getLine(0,janitor);
+  final String line1=readerSource.getLine(1,janitor);
+  final String line2=readerSource.getLine(2,janitor);
+  final String line3=readerSource.getLine(3,janitor);
+  final String line4=readerSource.getLine(4,janitor);
+  Assert.assertNull(&quot;out of bounds request should return null&quot;,line0);
+  Assert.assertEquals(&quot;Wrong source line&quot;,SAMPLE_SOURCE_LINE1,line1);
+  Assert.assertEquals(&quot;Wrong source line&quot;,SAMPLE_SOURCE_LINE2,line2);
+  Assert.assertEquals(&quot;Wrong source line&quot;,SAMPLE_SOURCE_LINE3,line3);
+  Assert.assertNull(&quot;out of bounds request should return null&quot;,line4);
+}
+</code>
+<types>
+<type id="6">
+EqualityVerifier
+</type>
+<type id="5">
+NullVerifier
+</type>
+<type id="16">
+InternalCallVerifier
+</type>
+<type id="10">
+HybridVerifier
+</type>
+</types>
+</method>
+
+<method>
+<signature>org.codehaus.groovy.jsr223.JSR223SecurityTest.should_forbid_an_instruction_when_overriding_GroovyClassLoader_using_constructor()</signature>
+<code>
+@Test(expected=ScriptException.class) public void should_forbid_an_instruction_when_overriding_GroovyClassLoader_using_constructor() throws Exception {
+  secureEval(ClassLoaderDefinitionType.CONSTRUCTOR);
+}
+</code>
+<types>
+<type id="3">
+ExceptionVerifier
+</type>
+<type id="19">
+ExecutionTester
+</type>
+</types>
+</method>
+
+<method>
+<signature>BSFSpecTest.testAccess()</signature>
+<code>
+@Test public void testAccess() throws BSFException {
+  BSFManager manager=new BSFManager();
+  BSFEngine bsfEngine=manager.loadScriptingEngine(&quot;groovy&quot;);
+  manager.declareBean(&quot;myvar&quot;,&quot;hello&quot;,String.class);
+  Object myvar=manager.lookupBean(&quot;myvar&quot;);
+  String result=(String)bsfEngine.call(myvar,&quot;reverse&quot;,new Object[0]);
+  assertEquals(&quot;olleh&quot;,result);
+}
+</code>
+<types>
+<type id="6">
+EqualityVerifier
+</type>
+<type id="16">
+InternalCallVerifier
+</type>
+</types>
+</method>
+
+<method>
+<signature>org.codehaus.groovy.jsr223.JSR223SecurityTest.resetTestFixture()</signature>
+<code>
+@Before public void resetTestFixture(){
+  testFixture=new TestFixture();
+}
+</code>
+<types>
+<type id="1">
+TestInitializer
+</type>
+</types>
+</method>
+
+<method>
+<signature>org.codehaus.groovy.tools.rootloadersync.SubclassingInJavaTest.testSubclass()</signature>
+<code>
+@Test public void testSubclass(){
+  OtherConcreteJavaSubclass unrelatedInstance=new OtherConcreteJavaSubclass();
+  ConcreteJavaSubclass instance=new ConcreteJavaSubclass();
+  assertEquals(&quot;string from subclass&quot;,instance.myMethod());
+  assertEquals(&quot;string from subclass&quot;,instance.myAbstractMethod());
+}
+</code>
+<types>
+<type id="6">
+EqualityVerifier
+</type>
+<type id="16">
+InternalCallVerifier
+</type>
+</types>
+</method>
+
+<method>
+<signature>JSR223SpecTest.testSimpleExample()</signature>
+<code>
+@Test public void testSimpleExample() throws ScriptException {
+  ScriptEngineManager factory=new ScriptEngineManager();
+  ScriptEngine engine=factory.getEngineByName(&quot;groovy&quot;);
+  Integer sum=(Integer)engine.eval(&quot;(1..10).sum()&quot;);
+  assertEquals(new Integer(55),sum);
+  engine.put(&quot;first&quot;,&quot;HELLO&quot;);
+  engine.put(&quot;second&quot;,&quot;world&quot;);
+  String result=(String)engine.eval(&quot;first.toLowerCase() + &apos; &apos; + second.toUpperCase()&quot;);
+  assertEquals(&quot;hello WORLD&quot;,result);
+}
+</code>
+<types>
+<type id="6">
+EqualityVerifier
+</type>
+<type id="17">
+APIUtilityVerifier
+</type>
+</types>
+</method>
+
+</detailSummary>
+<summary>
+<totalMethod>
+17
+</totalMethod>
+<type>
+<name>EmptyTester</name><occurs>0</occurs></type>
+<type>
+<name>IgnoredMethod</name><occurs>0</occurs></type>
+<type>
+<name>PublicFieldVerifier</name><occurs>0</occurs></type>
+<type>
+<name>NullVerifier</name><occurs>1</occurs></type>
+<type>
+<name>Unclassified</name><occurs>0</occurs></type>
+<type>
+<name>ExceptionVerifier</name><occurs>3</occurs></type>
+<type>
+<name>Logger</name><occurs>0</occurs></type>
+<type>
+<name>AssumptionSetter</name><occurs>0</occurs></type>
+<type>
+<name>APIUtilityVerifier</name><occurs>3</occurs></type>
+<type>
+<name>TestInitializer</name><occurs>2</occurs></type>
+<type>
+<name>EqualityVerifier</name><occurs>10</occurs></type>
+<type>
+<name>BooleanVerifier</name><occurs>1</occurs></type>
+<type>
+<name>InternalCallVerifier</name><occurs>7</occurs></type>
+<type>
+<name>BranchVerifier</name><occurs>0</occurs></type>
+<type>
+<name>IterativeVerifier</name><occurs>0</occurs></type>
+<type>
+<name>UtilityVerifier</name><occurs>1</occurs></type>
+<type>
+<name>ExecutionTester</name><occurs>4</occurs></type>
+<type>
+<name>IdentityVerifier</name><occurs>0</occurs></type>
+<type>
+<name>TestCleaner</name><occurs>0</occurs></type>
+<type>
+<name>ConditionMatcher</name><occurs>0</occurs></type>
+<type>
+<name>HybridVerifier</name><occurs>2</occurs></type>
+</summary>
+</report>

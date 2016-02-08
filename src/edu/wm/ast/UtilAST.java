@@ -45,7 +45,7 @@ public class UtilAST {
 		Hashtable<String, String> options = JavaCore.getDefaultOptions();
 		options.put(JavaCore.COMPILER_SOURCE, JavaCore.VERSION_1_6);
 		options.put(JavaCore.COMPILER_DOC_COMMENT_SUPPORT, JavaCore.ENABLED);
-	
+
 		parser.setCompilerOptions(options);
 		parser.setUnitName(unitName);
 
@@ -90,16 +90,27 @@ public class UtilAST {
 		sb.append("." + method.getName().getFullyQualifiedName());
 		sb.append("(");
 		List paras = method.parameters();
+		//try{
+		int i = 0;
 		if(paras != null){
 			for(Object para : paras){
 				if(para instanceof SingleVariableDeclaration){
-					ITypeBinding typeBinding = ((SingleVariableDeclaration)para).getType().resolveBinding();
-					sb.append(typeBinding.getQualifiedName());
+					//ITypeBinding typeBinding = ((SingleVariableDeclaration)para).getType().resolveBinding();
+					//sb.append(typeBinding.getQualifiedName());
+					sb.append(((SingleVariableDeclaration)para).getType().toString());
 				}else{
 					//th
 				}
+				if(i < paras.size() - 1){
+					sb.append(",");
+				}
+				i++;
 			}
 		}
+		//		}catch(Exception ex){
+		//			ex.printStackTrace();
+		//
+		//		}
 		sb.append(")");
 		return sb.toString();
 	}
@@ -134,7 +145,7 @@ public class UtilAST {
 		ASTNode parent = node.getParent();
 		if( parent instanceof MethodInvocation){
 			MethodInvocation mInvoke = (MethodInvocation)parent;
-			
+
 			ITypeBinding bindingFunc = (ITypeBinding) mInvoke.getName().resolveTypeBinding();
 			ITypeBinding binding = null;
 			if(mInvoke.getExpression() != null){
@@ -145,8 +156,10 @@ public class UtilAST {
 				return false;
 			}else{
 				//Java predefined functions 
-				if(((ITypeBinding) bindingFunc).getQualifiedName().startsWith("java")){
-					return false;
+				if(bindingFunc != null){
+					if(((ITypeBinding) bindingFunc).getQualifiedName().startsWith("java")){
+						return false;
+					}
 				}
 				if(((ITypeBinding) binding).getQualifiedName().startsWith("java")){
 					return false;
@@ -175,8 +188,10 @@ public class UtilAST {
 				return true;
 			}else{
 				//Java predefined functions 
-				if(((ITypeBinding) bindingFunc).getQualifiedName().startsWith("java")){
-					return true;
+				if(bindingFunc != null){
+					if(((ITypeBinding) bindingFunc).getQualifiedName().startsWith("java")){
+						return true;
+					}
 				}
 				if(((ITypeBinding) binding).getQualifiedName().startsWith("java")){
 					return true;
@@ -192,7 +207,7 @@ public class UtilAST {
 
 
 	public static boolean isInternalCall(MethodInvocation call){
-		
+
 		//ITypeBinding binding = (ITypeBinding) call.getName().resolveTypeBinding();    //orig
 		ITypeBinding binding = null;
 		if(call.getExpression() != null){
@@ -208,12 +223,12 @@ public class UtilAST {
 			if(((ITypeBinding) binding).getQualifiedName().startsWith("java")){
 				return false;
 			}
-			
+
 			//Type t = UtilAST.typeFromBinding(call.getAST(), binding);
 			//Internal functions
 			return true;
 		}
-		
+
 	}
 
 	public static boolean IsQualifier(final SimpleName node){
@@ -240,53 +255,53 @@ public class UtilAST {
 		}
 		return false;
 	}
-	
-	
+
+
 	public static Type typeFromBinding(AST ast, ITypeBinding typeBinding) {
-	    if( ast == null ) 
-	        throw new NullPointerException("ast is null");
-	    if( typeBinding == null )
-	        throw new NullPointerException("typeBinding is null");
+		if( ast == null ) 
+			throw new NullPointerException("ast is null");
+		if( typeBinding == null )
+			throw new NullPointerException("typeBinding is null");
 
-	    if( typeBinding.isPrimitive() ) {
-	        return ast.newPrimitiveType(
-	            PrimitiveType.toCode(typeBinding.getName()));
-	    }
+		if( typeBinding.isPrimitive() ) {
+			return ast.newPrimitiveType(
+					PrimitiveType.toCode(typeBinding.getName()));
+		}
 
-	    if( typeBinding.isCapture() ) {
-	        ITypeBinding wildCard = typeBinding.getWildcard();
-	        WildcardType capType = ast.newWildcardType();
-	        ITypeBinding bound = wildCard.getBound();
-	        if( bound != null ) {
-	            capType.setBound(typeFromBinding(ast, wildCard.getBound()), wildCard.isUpperbound());
-	        }
-	        return capType;
-	    }
+		if( typeBinding.isCapture() ) {
+			ITypeBinding wildCard = typeBinding.getWildcard();
+			WildcardType capType = ast.newWildcardType();
+			ITypeBinding bound = wildCard.getBound();
+			if( bound != null ) {
+				capType.setBound(typeFromBinding(ast, wildCard.getBound()), wildCard.isUpperbound());
+			}
+			return capType;
+		}
 
-	    if( typeBinding.isArray() ) {
-	        Type elType = typeFromBinding(ast, typeBinding.getElementType());
-	        return ast.newArrayType(elType, typeBinding.getDimensions());
-	    }
+		if( typeBinding.isArray() ) {
+			Type elType = typeFromBinding(ast, typeBinding.getElementType());
+			return ast.newArrayType(elType, typeBinding.getDimensions());
+		}
 
-	    if( typeBinding.isParameterizedType() ) {
-	        ParameterizedType type = ast.newParameterizedType(
-	            typeFromBinding(ast, typeBinding.getErasure()));
+		if( typeBinding.isParameterizedType() ) {
+			ParameterizedType type = ast.newParameterizedType(
+					typeFromBinding(ast, typeBinding.getErasure()));
 
-	        @SuppressWarnings("unchecked")
-	        List<Type> newTypeArgs = type.typeArguments();
-	        for( ITypeBinding typeArg : typeBinding.getTypeArguments() ) {
-	            newTypeArgs.add(typeFromBinding(ast, typeArg));
-	        }
+			@SuppressWarnings("unchecked")
+			List<Type> newTypeArgs = type.typeArguments();
+			for( ITypeBinding typeArg : typeBinding.getTypeArguments() ) {
+				newTypeArgs.add(typeFromBinding(ast, typeArg));
+			}
 
-	        return type;
-	    }
+			return type;
+		}
 
-	    // simple or raw type
-	    String qualName = typeBinding.getQualifiedName();
-	    if( "".equals(qualName) ) {
-	        throw new IllegalArgumentException("No name for type binding.");
-	    }
-	    return ast.newSimpleType(ast.newName(qualName));
+		// simple or raw type
+		String qualName = typeBinding.getQualifiedName();
+		if( "".equals(qualName) ) {
+			throw new IllegalArgumentException("No name for type binding.");
+		}
+		return ast.newSimpleType(ast.newName(qualName));
 	}
-	
+
 }

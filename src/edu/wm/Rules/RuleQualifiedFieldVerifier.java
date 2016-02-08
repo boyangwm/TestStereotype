@@ -25,7 +25,7 @@ public class RuleQualifiedFieldVerifier extends StereotypeRule {
 	@Override
 	public TestStereotype GetMethodStereotype() {
 		// TODO Auto-generated method stub
-		return TestStereotype.QualifiedField;
+		return TestStereotype.PublicField;
 	}
 
 }

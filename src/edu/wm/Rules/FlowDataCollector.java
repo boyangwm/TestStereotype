@@ -21,7 +21,7 @@ public class FlowDataCollector extends RuleCollector {
 		ArrayList<StereotypeRule> ruleList = new ArrayList<StereotypeRule>();
 		ruleList.add(new RuleIteritiveVerifier());
 		ruleList.add(new RuleBranchVerifier());
-		ruleList.add(new RuleExternalCallVerifier());
+		ruleList.add(new RuleAPIUtilityVerifier());
 		ruleList.add(new RuleInternalCallVerifier());
 		ruleList.add(new RuleQualifiedFieldVerifier());
 		ruleList.add(new RuleExecutionTester());

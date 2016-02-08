@@ -8,20 +8,12 @@ import edu.wm.constants.Assertions;
 import edu.wm.constants.TestStereotype;
 import edu.wm.core.TestUnderAnalysis;
 
-
-
-
-/**
- * Rule for equality assertions
- * @author Boyang
- *
- */
-public class RuleEqualityVerifier extends StereotypeRule {
+public class ConditionMatcherVerifier extends StereotypeRule {
 
 	/**
 	 * Creates a new RuleConditionVerifier using default values for data sets.
 	 */
-	public RuleEqualityVerifier()  {super(); }
+	public ConditionMatcherVerifier()  {super(); }
 
 
 
@@ -35,13 +27,7 @@ public class RuleEqualityVerifier extends StereotypeRule {
 		int numOfMatches = 0;
 		for(MethodInvocation assertion : assertions){
 			String assertionName = getAssertionName(assertion);
-			if(assertionName.equals(Assertions.assertEquals.name())){
-				numOfMatches++;
-			}else if(assertionName.equals(Assertions.assertArrayEquals.name())){
-				numOfMatches++;
-			//}else if(assertionName.equals(Assertions.assertThat.name())){
-			//	numOfMatches++;
-			}else if(assertionName.equals(Assertions.assertNotEquals.name())){
+			if(assertionName.equals(Assertions.assertThat.name())){
 				numOfMatches++;
 			}
 		}
@@ -56,6 +42,6 @@ public class RuleEqualityVerifier extends StereotypeRule {
 	@Override
 	public TestStereotype GetMethodStereotype() {
 		// TODO Auto-generated method stub
-		return TestStereotype.Equality;
+		return TestStereotype.ConditionMatcher;
 	}
 }

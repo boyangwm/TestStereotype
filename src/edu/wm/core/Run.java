@@ -41,8 +41,10 @@ public class Run {
 			e.printStackTrace();
 		}
 		analyzer.printTestType();
+		
+		System.out.println("\n");
 		analyzer.printSummary();
-		System.out.println("Done. Thanks.");
+		//System.out.println("Done. Thanks.");
 		
 	}
 

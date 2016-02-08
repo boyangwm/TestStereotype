@@ -11,6 +11,7 @@
 	<classpathentry kind="lib" path="libs/org.eclipse.jdt.core_3.8.1.v20120531-0637.jar"/>
 	<classpathentry kind="lib" path="libs/org.eclipse.osgi_3.8.0.v20120529-1548.jar"/>
 	<classpathentry kind="lib" path="libs/commons-io-2.4.jar"/>
+	<classpathentry kind="lib" path="libs/apache-commons-lang.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/4"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

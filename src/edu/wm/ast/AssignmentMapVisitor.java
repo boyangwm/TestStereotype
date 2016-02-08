@@ -21,8 +21,9 @@ public class AssignmentMapVisitor extends ASTVisitor {
 
 	public HashSet<MethodInvocation> internalCalls = new HashSet<MethodInvocation> ();
 
-
-
+	//stores all the function calls
+	public HashSet<MethodInvocation> calls = new HashSet<MethodInvocation> ();  
+	
 	/**
 	 * Stores all assertions
 	 */
@@ -137,6 +138,7 @@ public class AssignmentMapVisitor extends ASTVisitor {
 	 * updates AsserstionToRelatedSM when visit MethodInvocation 	 
 	 * */
 	public boolean visit(final MethodInvocation node) {
+		calls.add(node);
 		if(this.assertions.contains(node)){
 			SimpleVarNameVisitor smVisitor = new SimpleVarNameVisitor();
 			node.accept(smVisitor);

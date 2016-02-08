@@ -9,12 +9,9 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import org.eclipse.jdt.core.dom.AST;
 import org.eclipse.jdt.core.dom.ASTParser;
-import org.eclipse.jdt.core.dom.ASTVisitor;
-import org.eclipse.jdt.core.dom.Annotation;
 import org.eclipse.jdt.core.dom.CompilationUnit;
 import org.eclipse.jdt.core.dom.MethodDeclaration;
 import org.eclipse.jdt.core.dom.MethodInvocation;
@@ -110,8 +107,8 @@ public class TestTestUnderAnalysis {
 			e.printStackTrace();
 		}
 	}
-	
-	
+
+
 	@Test
 	public void TestAssertionTypeNull(){
 		String methodTest = "public class A { "
@@ -401,9 +398,9 @@ public class TestTestUnderAnalysis {
 		}
 	}
 
-	
-	
-	
+
+
+
 	@Test
 	public void TestAssertionTypeForField(){
 		String fileString = "public class A {"
@@ -430,15 +427,15 @@ public class TestTestUnderAnalysis {
 				TestUnderAnalysis test = entry.getValue();
 				HashSet<TestStereotype> rules = test.matchedRules;
 				assertTrue(ContainsType(rules, TestStereotype.Equality));
-				assertTrue(ContainsType(rules, TestStereotype.QualifiedField));
+				assertTrue(ContainsType(rules, TestStereotype.PublicField));
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
 
-	
-	
+
+
 	@Test
 	public void TestAssertionTypeForExternal(){
 		String fileString = "public class A {"
@@ -465,15 +462,15 @@ public class TestTestUnderAnalysis {
 				TestUnderAnalysis test = entry.getValue();
 				HashSet<TestStereotype> rules = test.matchedRules;
 				assertTrue(ContainsType(rules, TestStereotype.Equality));
-				assertTrue(ContainsType(rules, TestStereotype.ExternalCall));
+				assertTrue(ContainsType(rules, TestStereotype.ApiUtility));
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
 
-	
-	
+
+
 	@Test
 	public void TestAssertionTypeForInternal2(){
 		String fileString = "public class A {"
@@ -507,20 +504,19 @@ public class TestTestUnderAnalysis {
 		}
 	}
 
-	
-	
-	
-	
+
+
+
+
 	@Test
 	public void TestEmpty(){
-		
+
 		String fileString = "public class A {"
 				+"	@Test 	"
 				+"	public void testHelloWorld() {" 
 				+"	}"
 				+"}";
-		
-		
+
 
 		TestStereotypeAnalyzer analyzer = new TestStereotypeAnalyzer();
 		try {
@@ -528,8 +524,98 @@ public class TestTestUnderAnalysis {
 			for (Map.Entry<String, TestUnderAnalysis>  entry : analyzer.mapSignToTest.entrySet()) {
 				TestUnderAnalysis test = entry.getValue();
 				HashSet<TestStereotype> rules = test.matchedRules;
-				//assertTrue(ContainsType(rules, TestStereotype.Equality));
 				assertTrue(ContainsType(rules, TestStereotype.Empty));
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
+
+
+
+
+	@Test
+	public void TestLogger(){
+
+		String fileString = "public class A {"
+				+"@Test"
+				+" public void testPreample() throws Exception {"
+				+"    byte[] bytes = \"\".getBytes(\"utf-16\");"
+				+"    System.out.println(\"Preample len is \" + bytes.length);"
+				+" }"
+				+"}";
+
+
+
+		TestStereotypeAnalyzer analyzer = new TestStereotypeAnalyzer();
+		try {
+			analyzer.analyzeString(fileString);
+			for (Map.Entry<String, TestUnderAnalysis>  entry : analyzer.mapSignToTest.entrySet()) {
+				TestUnderAnalysis test = entry.getValue();
+				HashSet<TestStereotype> rules = test.matchedRules;
+				assertTrue(ContainsType(rules, TestStereotype.Logger));
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
+
+	//	@Test
+	//    public void testPreample() throws Exception {
+	//		Logger tlog = Logger.getLogger("myLog");
+	//		tlog.log(Level.SEVERE, "test");
+	//    }
+	//	
+
+	@Test
+	public void TestLogger2(){
+
+		String fileString = "import java.util.logging.Level;"
+				+ "import java.util.logging.Logger;"
+				+ "public class A {"
+				+"@Test"
+				+" public void testPreample() throws Exception {"
+				+"	Logger tlog = Logger.getLogger(\"myLog\");"
+				+"	tlog.log(Level.SEVERE, \"test\");"
+				+"}"
+				+"}";
+
+		TestStereotypeAnalyzer analyzer = new TestStereotypeAnalyzer();
+		try {
+			analyzer.analyzeString(fileString);
+			for (Map.Entry<String, TestUnderAnalysis>  entry : analyzer.mapSignToTest.entrySet()) {
+				TestUnderAnalysis test = entry.getValue();
+				HashSet<TestStereotype> rules = test.matchedRules;
+				assertTrue(ContainsType(rules, TestStereotype.Logger));
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
+	
+	
+	@Test
+	public void TestConditionMatcher(){
+
+		String fileString = "import java.util.logging.Level;"
+				+ "import java.util.logging.Logger;"
+				+ "public class A {"
+				+"@Test"
+				+"  public void testAssertThatBothContainsString() {"
+				+"    org.junit.Assert.assertThat(\"albumen\", both(containsString(\"a\")).and(containsString(\"b\")));"
+				+" }"
+				+"}";
+
+		TestStereotypeAnalyzer analyzer = new TestStereotypeAnalyzer();
+		try {
+			analyzer.analyzeString(fileString);
+			for (Map.Entry<String, TestUnderAnalysis>  entry : analyzer.mapSignToTest.entrySet()) {
+				TestUnderAnalysis test = entry.getValue();
+				HashSet<TestStereotype> rules = test.matchedRules;
+				assertTrue(ContainsType(rules, TestStereotype.ConditionMatcher));
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -538,8 +624,61 @@ public class TestTestUnderAnalysis {
 	
 	
 	
+	@Test
+	public void TestIgnore(){
+
+		String fileString = "import java.util.logging.Level;"
+				+ "import java.util.logging.Logger;"
+				+ "public class A {"
+				+"@Ignore(\"Test is ignored as a demonstration\")"
+				+"@Test"
+				+"public void testSame() {"
+				+"    assertThat(1, is(1));"
+				+"}"
+				+"}";
+
+		TestStereotypeAnalyzer analyzer = new TestStereotypeAnalyzer();
+		try {
+			analyzer.analyzeString(fileString);
+			for (Map.Entry<String, TestUnderAnalysis>  entry : analyzer.mapSignToTest.entrySet()) {
+				TestUnderAnalysis test = entry.getValue();
+				HashSet<TestStereotype> rules = test.matchedRules;
+				assertTrue(ContainsType(rules, TestStereotype.Ignore));
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
+	
 	
 
+	@Test
+	public void TestAssumption(){
+
+		String fileString = "import java.util.logging.Level;"
+				+ "import java.util.logging.Logger;"
+				+ "public class A {"
+				+" @Test public void filenameIncludesUsername() {"
+				+"    assumeThat(File.separatorChar, is('/'));"
+			    +"    assertThat(new User(\"optimus\").configFileName(), is(\"configfiles/optimus.cfg\"));"
+			    +"}"
+				+"}";
+
+		TestStereotypeAnalyzer analyzer = new TestStereotypeAnalyzer();
+		try {
+			analyzer.analyzeString(fileString);
+			for (Map.Entry<String, TestUnderAnalysis>  entry : analyzer.mapSignToTest.entrySet()) {
+				TestUnderAnalysis test = entry.getValue();
+				HashSet<TestStereotype> rules = test.matchedRules;
+				assertTrue(ContainsType(rules, TestStereotype.Assumption));
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+	
+   
 
 	/**
 	 * Check if rules contains type type

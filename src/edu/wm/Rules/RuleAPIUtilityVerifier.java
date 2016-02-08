@@ -3,11 +3,11 @@ package edu.wm.Rules;
 import edu.wm.constants.TestStereotype;
 import edu.wm.core.TestUnderAnalysis;
 
-public class RuleExternalCallVerifier  extends StereotypeRule {
+public class RuleAPIUtilityVerifier  extends StereotypeRule {
 	/**
 	 * Creates a new RuleTestCleaner using default values for data sets.
 	 */
-	public RuleExternalCallVerifier()  {super(); }
+	public RuleAPIUtilityVerifier()  {super(); }
 
 
 
@@ -24,6 +24,6 @@ public class RuleExternalCallVerifier  extends StereotypeRule {
 	@Override
 	public TestStereotype GetMethodStereotype() {
 		// TODO Auto-generated method stub
-		return TestStereotype.ExternalCall;
+		return TestStereotype.ApiUtility;
 	}
 }
