@@ -13,6 +13,8 @@ public class ConfigConstants {
 	//public static final String projectLoc = "C:\\Users\\Boyang\\Desktop\\Research\\Stereotype_test\\Apps\\findbugs-3.0.1"; -No test cases detected.
 	//public static final String projectLoc = "C:\\Users\\Boyang\\Desktop\\Research\\Stereotype_test\\Apps\\jabref-3.0";
 	//public static final String projectLoc = "C:\\Users\\Boyang\\Desktop\\Apps\\airavata-master"; 
-	public static final String projectLoc = "C:\\Users\\Boyang\\Desktop\\Apps\\group1\\groovy-2.4.5"; 
+	//public static final String projectLoc = "C:\\Users\\Boyang\\Desktop\\Apps\\group1\\groovy-2.4.5"; 
+	//public static final String projectLoc = "C:\\Users\\Boyang\\Desktop\\Apps\\selectedApps2\\apache-ant-1.9.6";
+	public static final String projectLoc = "C:\\Users\\Boyang\\workspace\\UserStudy1\\src";
 	
 }

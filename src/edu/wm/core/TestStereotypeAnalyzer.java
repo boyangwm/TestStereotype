@@ -52,7 +52,7 @@ public class TestStereotypeAnalyzer {
 	//public HashSet<String> javaFiles = new HashSet<String>();
 
 	//Map of method signature to method definition
-	public HashMap<String, MethodDeclaration> mapSignToMethod = new  HashMap<String, MethodDeclaration>();
+	//public HashMap<String, MethodDeclaration> mapSignToMethod = new  HashMap<String, MethodDeclaration>();
 
 	//Map of method signature to tests
 	public HashMap<String, TestUnderAnalysis> mapSignToTest = new  HashMap<String, TestUnderAnalysis>();
@@ -142,7 +142,7 @@ public class TestStereotypeAnalyzer {
 				cu.accept(visitor);
 				for (MethodDeclaration method : visitor.getMethods()) {
 					String sign = UtilAST.getMethodSignature(method);
-					mapSignToMethod.put(sign, method);
+					//mapSignToMethod.put(sign, method);
 					//If it's a test case, put the method into the map.
 					HashSet<Annotation> annotations = ReturnAnnotation(method);
 					if(TestAnnotation.contains(annotations)){
@@ -187,7 +187,7 @@ public class TestStereotypeAnalyzer {
 		cu.accept(methodVisitor);
 		for (MethodDeclaration method : methodVisitor.getMethods()) {
 			String sign = UtilAST.getMethodSignature(method);
-			mapSignToMethod.put(sign, method);
+			//mapSignToMethod.put(sign, method);
 			//If it's a test case, put the method into the map.
 			HashSet<Annotation> annotations = ReturnAnnotation(method);
 			if(TestAnnotation.contains(annotations)){
@@ -358,7 +358,7 @@ public class TestStereotypeAnalyzer {
 		for (Map.Entry<String, TestUnderAnalysis>  entry : mapSignToTest.entrySet()) {
 			TestUnderAnalysis test = entry.getValue();
 			System.out.println("<method>");
-			System.out.println("<signature>" + entry.getKey() + "</signature>");
+			System.out.println("<signature>" +  StringEscapeUtils.escapeXml(entry.getKey()) + "</signature>");
 			System.out.println("<code>");
 			String code = StringEscapeUtils.escapeXml(test.getMethod().toString());
 			//			code = code.replaceAll("<", "&lt;");       
