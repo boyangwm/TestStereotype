@@ -6,6 +6,7 @@ import java.util.HashSet;
 import org.eclipse.jdt.core.dom.ASTNode;
 import org.eclipse.jdt.core.dom.Annotation;
 import org.eclipse.jdt.core.dom.DoStatement;
+import org.eclipse.jdt.core.dom.EnhancedForStatement;
 import org.eclipse.jdt.core.dom.ForStatement;
 import org.eclipse.jdt.core.dom.MethodDeclaration;
 import org.eclipse.jdt.core.dom.MethodInvocation;
@@ -43,7 +44,7 @@ public class RuleIteritiveVerifier extends StereotypeRule {
 		ASTNode parent = node;
 		while(true){
 			parent = parent.getParent();
-			if(parent instanceof ForStatement || parent instanceof DoStatement || parent instanceof WhileStatement){
+			if(parent instanceof ForStatement || parent instanceof DoStatement || parent instanceof WhileStatement || parent instanceof EnhancedForStatement){
 				return true;
 			}
 			if(parent instanceof MethodDeclaration){

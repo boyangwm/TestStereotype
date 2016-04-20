@@ -678,6 +678,115 @@ public class TestTestUnderAnalysis {
 		}
 	}
 	
+	
+	@Test
+	public void TestG1M30(){
+		//just simulate the method ignore + system.out.println
+		String fileString =  "public class A {"
+				+	"@Ignore @Test public void testBuilderPerformanceWithDefaultValues(){"
+				+  			"System.out.println();"
+				+	"}"
+				+"}";
+		
+
+		TestStereotypeAnalyzer analyzer = new TestStereotypeAnalyzer();
+		try {
+			analyzer.analyzeString(fileString);
+			for (Map.Entry<String, TestUnderAnalysis>  entry : analyzer.mapSignToTest.entrySet()) {
+				TestUnderAnalysis test = entry.getValue();
+				HashSet<TestStereotype> rules = test.matchedRules;
+				assertTrue(ContainsType(rules, TestStereotype.Ignore));
+				assertTrue(ContainsType(rules, TestStereotype.Logger));
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+	
+	
+	@Test
+	public void TestG1M45(){
+
+		String fileString =  "public class A {"
+				+		"@Ignore @Test public void testBuilderPerformanceWithDefaultValues(){"
+				+			"Assume.assumeFalse(System.getProperty(\"os.name\").toLowerCase(Locale.ENGLISH).contains(\"windows\"));"
+				+		"}"
+				+"}";
+		
+
+		TestStereotypeAnalyzer analyzer = new TestStereotypeAnalyzer();
+		try {
+			analyzer.analyzeString(fileString);
+			for (Map.Entry<String, TestUnderAnalysis>  entry : analyzer.mapSignToTest.entrySet()) {
+				TestUnderAnalysis test = entry.getValue();
+				HashSet<TestStereotype> rules = test.matchedRules;
+				assertTrue(ContainsType(rules, TestStereotype.Assumption));
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+	
+	
+	
+	@Test
+	public void TestG1M22(){
+
+		String fileString =  "public class A {"
+				+		"@Test public void testDescribeSpotRequestsInRegion(){"
+				+			"for (  String region : Region.DEFAULT_REGIONS) {"
+				+			" SortedSet allResults=ImmutableSortedSet.copyOf(client.getSpotInstanceApi().get().describeSpotInstanceRequestsInRegion(region));"
+				+			"assertNotNull(allResults);"
+			    +				"if (allResults.size() >= 1) {"
+			    +				"  SpotInstanceRequest request=allResults.last();"
+			    +				"  SortedSet result=ImmutableSortedSet.copyOf(client.getSpotInstanceApi().get().describeSpotInstanceRequestsInRegion(region,request.getId()));"
+			    +				"   assertNotNull(result);"
+			    +				"  SpotInstanceRequest compare=result.last();"
+			    +				"  assertEquals(compare,request);"
+			    +				" }	"		
+				+			"}"
+				+		"}"
+				+"}";
+		
+
+		TestStereotypeAnalyzer analyzer = new TestStereotypeAnalyzer();
+		try {
+			analyzer.analyzeString(fileString);
+			for (Map.Entry<String, TestUnderAnalysis>  entry : analyzer.mapSignToTest.entrySet()) {
+				TestUnderAnalysis test = entry.getValue();
+				HashSet<TestStereotype> rules = test.matchedRules;
+				assertTrue(ContainsType(rules, TestStereotype.Iterative));
+				assertTrue(ContainsType(rules, TestStereotype.Branch));
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+	
+//	@Test
+//	public void TestG1M25(){
+//
+//		String fileString =  "public class A {"
+//				+		"@Test public void testContainsNone_CharArrayWithBadSupplementaryChars(){"
+//				+			"assertTrue(StringUtils.containsNone(CharUSuppCharHigh,CharU20001.toCharArray()));"		
+//				+		"}"
+//				+"}";
+//		
+//
+//		TestStereotypeAnalyzer analyzer = new TestStereotypeAnalyzer();
+//		try {
+//			analyzer.analyzeString(fileString);
+//			for (Map.Entry<String, TestUnderAnalysis>  entry : analyzer.mapSignToTest.entrySet()) {
+//				TestUnderAnalysis test = entry.getValue();
+//				HashSet<TestStereotype> rules = test.matchedRules;
+//				assertTrue(ContainsType(rules, TestStereotype.Iterative));
+//				assertTrue(ContainsType(rules, TestStereotype.Branch));
+//			}
+//		} catch (Exception e) {
+//			e.printStackTrace();
+//		}
+//	}
+	
    
 
 	/**

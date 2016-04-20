@@ -24,7 +24,7 @@ public class RuleAssumptionSetter extends StereotypeRule {
 		HashSet<MethodInvocation> allCalls = mAnalyzer.allCalls;
 		for(MethodInvocation call : allCalls){
 			String name = call.getName().toString().toLowerCase();
-			if(name.equals("assumethat") || name.equals("assumetrue")){
+			if(name.equals("assumethat") || name.equals("assumetrue") || name.equals("assumefalse")){
 				return true;
 			}
 		}
